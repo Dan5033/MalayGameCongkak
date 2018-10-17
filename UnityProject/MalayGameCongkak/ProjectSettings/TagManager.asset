@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Slot
   layers:
   - Default
   - TransparentFX
@@ -13,24 +14,24 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Hand
+  - Slots
+  - Slot0
+  - Slot1
+  - Slot2
+  - Slot3
+  - Slot4
+  - Slot5
+  - Slot6
+  - Slot7
+  - Slot8
+  - Slot9
+  - Slot10
+  - Slot11
+  - Slot12
+  - Slot13
+  - Slot14
+  - Slot15
   - 
   - 
   - 
@@ -40,4 +41,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Congkak
+    uniqueID: 2975900605
+    locked: 0
+  - name: Marbles
+    uniqueID: 1295703461
     locked: 0
