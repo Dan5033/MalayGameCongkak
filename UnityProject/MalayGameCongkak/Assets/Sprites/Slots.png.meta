@@ -1,10 +1,11 @@
 fileFormatVersion: 2
-guid: 93119e90639f5ab4ea8ea3211834c7d7
+guid: 4d2517cba6ea3304fb439da71e1ce372
 TextureImporter:
   fileIDToRecycleName:
     21300000: Slots_0
     21300002: Slots_1
     21300004: Slots_2
+    21300006: Slots_3
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -123,7 +124,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0af00b87e5146a34698123c3fea31320
+      spriteID: c2058805446b9f147b0cbf2cc8382117
       vertices: []
       indices: 
       edges: []
@@ -143,7 +144,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 06e94dba8812c9c4a8726763e31a0ce5
+      spriteID: 3d4889a3ce08efb4381b936471fd0597
       vertices: []
       indices: 
       edges: []
@@ -163,7 +164,27 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f2f3f4b2bed5a614794fcae79b47a37f
+      spriteID: b41a452235c5cb542aeed327b765280d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Slots_3
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 0
+        width: 300
+        height: 300
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7dd04e6703126349b04e9615e3c3265
       vertices: []
       indices: 
       edges: []
@@ -171,7 +192,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: acca6b4f4a605b848abf7ae0448f0c4f
+    spriteID: 5cfe41a4ccc4e2f429406d0f92b176da
     vertices: []
     indices: 
     edges: []

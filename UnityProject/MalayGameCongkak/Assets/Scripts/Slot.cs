@@ -18,6 +18,8 @@ public class Slot : MonoBehaviour {
         {
             i.GetComponent<Rigidbody2D>().velocity = (transform.position - i.transform.position).normalized * speed;
         }
+
+        name = MarbleAmount().ToString();
 	}
 
     //Get Data
@@ -27,15 +29,18 @@ public class Slot : MonoBehaviour {
     }
 
     //Slot Actions
-    public bool StoreMarbles(GameObject item)
+    public void StoreMarbles(GameObject item)
     {
-        Marble marble = item.GetComponent<Marble>();
-        if (marble != null)
+        item.layer = 10 + slotID;
+        marbles.Add(item);
+    }
+
+    public void StoreMarbles(List<GameObject> item)
+    {
+        foreach(GameObject i in item)
         {
-            item.layer = 10 + slotID;
-            marbles.Add(item);
+            StoreMarbles(i);
         }
-        return false;
     }
 
     public void SurrenderMarbles(int player)
