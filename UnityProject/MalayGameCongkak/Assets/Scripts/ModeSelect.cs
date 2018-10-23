@@ -40,7 +40,7 @@ public class ModeSelect : MonoBehaviour {
                 break;
             case 1:
                 modeText.text = "Burning Villages";
-                miscSlider.maxValue = 13;
+                miscSlider.maxValue = 6;
                 break;
             case 2:
                 modeText.text = "Speed Congkak";
