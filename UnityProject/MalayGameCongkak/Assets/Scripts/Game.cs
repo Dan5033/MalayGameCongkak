@@ -1,10 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public enum StartStyle
+{
+    P1,
+    P2,
+    together
+}
+
+public enum GameMode
+{
+    bestOf,
+    burningVillages,
+    speedCongkak
+}
 
 public class Game : MonoBehaviour {
 
     public static Game instance;
+
+    //Game Settings    
+    public static StartStyle startStyle = StartStyle.together;
+    public static GameMode gameMode = GameMode.bestOf;
+    public static int miscNum = 1;
+
 
     [Header("Prefabs")]
     [SerializeField] private GameObject prefabMarble;
@@ -27,6 +49,9 @@ public class Game : MonoBehaviour {
     private bool[] turnDone = { false, false };
     private int doneFirst = -1;
     [SerializeField] private int turn = -1;
+
+    [Header("Interface")]
+    [SerializeField] GameObject[] texts;
 
 	void Start ()
     {
@@ -67,10 +92,51 @@ public class Game : MonoBehaviour {
             }
         }
 
-        //Click Input
-        if (Input.GetMouseButtonDown(0))
+        //Text Input
+        switch (turn)
         {
-            Slot slot = FindSlotOnMouse();
+            case -1:
+                texts[0].GetComponent<Text>().text = "Choose Starting Village";
+                texts[1].GetComponent<Text>().text = "Choose Starting Village";
+                break;
+            case 0:
+                texts[0].GetComponent<Text>().text = "Go!";
+                texts[1].GetComponent<Text>().text = "Go!";
+                break;
+            case 1:
+                texts[0].GetComponent<Text>().text = "Your Turn";
+                texts[1].GetComponent<Text>().text = "";
+                break;
+            case 2:
+                texts[0].GetComponent<Text>().text = "";
+                texts[1].GetComponent<Text>().text = "Your Turn";
+                break;
+            case 3:
+                int am1 = slots[15].GetComponent<Slot>().MarbleAmount();
+                int am2 = slots[7].GetComponent<Slot>().MarbleAmount();
+                if (am1 > am2)
+                {
+                    texts[0].GetComponent<Text>().text = "You Win";
+                    texts[1].GetComponent<Text>().text = "You Lose";
+                }
+                else if (am2 > am1)
+                {
+                    texts[0].GetComponent<Text>().text = "You Lose";
+                    texts[1].GetComponent<Text>().text = "You Win";
+                }
+                else
+                {
+                    texts[0].GetComponent<Text>().text = "Draw";
+                    texts[1].GetComponent<Text>().text = "Draw";
+                }
+                break;
+        }
+
+        //Click Input
+        Touch[] touches = Input.touches;
+        foreach (Touch i in touches)
+        {
+            Slot slot = FindSlotOnTouch(i);
             if (slot != null)
             {
                 switch (turn)
@@ -86,7 +152,7 @@ public class Game : MonoBehaviour {
                             nextSlot[1] = slot.slotID;
                         }
 
-                        
+
                         if (nextSlot[0] > -1 && nextSlot[1] > -1)
                         {
                             //Start Game
@@ -101,7 +167,6 @@ public class Game : MonoBehaviour {
                         break;
                     case 0:
                         //First Turn
-
                         //Lane priority
                         if (slot.slotID >= 7 && slot.slotID < 16)
                         {
@@ -119,7 +184,8 @@ public class Game : MonoBehaviour {
                             if (turnDone[0])
                             {
                                 doneFirst = 0;
-                            } else if (turnDone[1])
+                            }
+                            else if (turnDone[1])
                             {
                                 doneFirst = 1;
                             }
@@ -135,11 +201,12 @@ public class Game : MonoBehaviour {
                         break;
                     case 1:
                         //P1 Turn
-                        PlayerTurn(0,slot);
+                        PlayerTurn(0, slot);
 
                         if (turnDone[0])
                         {
                             turnDone[0] = false;
+                            turnDone[1] = false;
                             turn = 2;
                             nextSlot[1] = -1;
                             nextSlot[0] = -2;
@@ -151,16 +218,42 @@ public class Game : MonoBehaviour {
 
                         if (turnDone[1])
                         {
+                            turnDone[0] = false;
                             turnDone[1] = false;
                             turn = 1;
                             nextSlot[0] = -1;
                             nextSlot[1] = -2;
                         }
                         break;
+                    case 3:
+                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        break;
                 }
 
                 UpdateSlotSprite();
             }
+
+            //Lose State
+            bool gameEnd = true;
+            foreach(Slot x in slots)
+            {
+                for(int y = 0; y < 16; y++)
+                {
+                    if (y != 7 && y != 15)
+                    {
+                        if (x.MarbleAmount() > 0)
+                        {
+                            gameEnd = false;
+                        }
+                    }
+                }
+            }
+
+            if (gameEnd)
+            {
+                turn = 3;
+            }
+            
         }
     }
 
@@ -238,9 +331,9 @@ public class Game : MonoBehaviour {
         }
     }
 
-    private Slot FindSlotOnMouse()
+    private Slot FindSlotOnTouch(Touch touch)
     {
-        RaycastHit2D[] ray = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        RaycastHit2D[] ray = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(touch.position), Vector2.zero);
         if (ray.Length > 0)
         {
             foreach(RaycastHit2D i in ray)
