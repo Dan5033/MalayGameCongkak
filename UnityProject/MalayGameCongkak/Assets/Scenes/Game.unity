@@ -879,6 +879,7 @@ MonoBehaviour:
   pop: {fileID: 8300000, guid: 9f93718d94afca34f808ad60a3d3a451, type: 3}
   take: {fileID: 8300000, guid: dcbbb54afc523ec4b96b451210a61bbf, type: 3}
   money: {fileID: 8300000, guid: dd08cfcb18fb8194e91f41b8c892659e, type: 3}
+  mainMenuName: MainMenu
 --- !u!4 &530617599
 Transform:
   m_ObjectHideFlags: 0

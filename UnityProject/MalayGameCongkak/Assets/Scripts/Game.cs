@@ -18,6 +18,17 @@ public enum GameMode
     speedCongkak
 }
 
+public enum GameState
+{
+    PickingStartSlot,
+    BothTurns,
+    P1Turn,
+    P2Turn,
+    GameEnd,
+    Paused,
+    Animating
+}
+
 public class Game : MonoBehaviour {
 
     public static Game instance;
@@ -47,8 +58,9 @@ public class Game : MonoBehaviour {
     private int[] nextSlot = { -1, -1 };
     private bool[] turnDone = { false, false };
     private int doneFirst = -1;
-    [SerializeField] private int turn = -1;
+    [SerializeField] private GameState turn = GameState.PickingStartSlot;
     private List<int>[] noGoSlots = { new List<int> { 7 }, new List<int> { 15 } };
+    private int marblePerSlot = 1;
 
     //game mode variables
     private int[] wins = { 0, 0 };
@@ -64,6 +76,9 @@ public class Game : MonoBehaviour {
     [SerializeField] private AudioClip pop;
     [SerializeField] private AudioClip take;
     [SerializeField] private AudioClip money;
+
+    [Header("Scenes")]
+    [SerializeField] private string mainMenuName;
 
 	void Start ()
     {
@@ -81,7 +96,7 @@ public class Game : MonoBehaviour {
         {
             if (i != 7 && i != 15)
             {
-                for (var j = 0; j < 1; j++)
+                for (var j = 0; j < marblePerSlot; j++)
                 {
                     GameObject marble = Instantiate(prefabMarble);
                     marble.transform.position = handObject[Mathf.RoundToInt(Random.value)].transform.position + new Vector3(Random.value,Random.value,0);
@@ -91,18 +106,19 @@ public class Game : MonoBehaviour {
         }
 
         //Start Style
-        switch (startStyle)
+        SetupTurn((int) startStyle);
+
+        //Game Mode UI
+        switch (gameMode)
         {
-            case StartStyle.P1:
-                turn = 1;
-                nextSlot[1] = -2;
+            case GameMode.bestOf:
+                winsText.enabled = true;
                 break;
-            case StartStyle.P2:
-                turn = 2;
-                nextSlot[0] = -2;
+            case GameMode.burningVillages:
                 break;
-            case StartStyle.together:
-                turn = -1;
+            case GameMode.speedCongkak:
+                timeBar[0].enabled = true;
+                timeBar[1].enabled = true;
                 break;
         }
 
@@ -120,26 +136,26 @@ public class Game : MonoBehaviour {
             }
         }
 
-        //Text Input
+        //Text Display
         switch (turn)
         {
-            case -1:
+            case GameState.PickingStartSlot:
                 texts[0].GetComponent<Text>().text = "Choose Starting Village";
                 texts[1].GetComponent<Text>().text = "Choose Starting Village";
                 break;
-            case 0:
+            case GameState.BothTurns:
                 texts[0].GetComponent<Text>().text = "Go!";
                 texts[1].GetComponent<Text>().text = "Go!";
                 break;
-            case 1:
+            case GameState.P1Turn:
                 texts[0].GetComponent<Text>().text = "Your Turn";
                 texts[1].GetComponent<Text>().text = "";
                 break;
-            case 2:
+            case GameState.P2Turn:
                 texts[0].GetComponent<Text>().text = "";
                 texts[1].GetComponent<Text>().text = "Your Turn";
                 break;
-            case 3:
+            case GameState.GameEnd:
                 int am1 = slots[15].GetComponent<Slot>().MarbleAmount();
                 int am2 = slots[7].GetComponent<Slot>().MarbleAmount();
                 if (am1 > am2)
@@ -158,167 +174,148 @@ public class Game : MonoBehaviour {
                     texts[1].GetComponent<Text>().text = "Draw";
                 }
                 break;
-        }
-
-        //Game Mode UI
-        switch (gameMode)
-        {
-            case GameMode.bestOf:
-                winsText.enabled = true;
+            case GameState.Paused:
+                texts[0].GetComponent<Text>().text = "Paused";
+                texts[1].GetComponent<Text>().text = "Paused";
                 break;
-            case GameMode.burningVillages:
-                break;
-            case GameMode.speedCongkak:
-                timeBar[0].enabled = true;
-                timeBar[1].enabled = true;
+            case GameState.Animating:
+                texts[0].GetComponent<Text>().text = "";
+                texts[1].GetComponent<Text>().text = "";
                 break;
         }
-
+        
         //Click Input
         Touch[] touches = Input.touches;
         foreach (Touch i in touches)
         {
             if (i.phase == TouchPhase.Began)
             {
-                Slot slot = FindSlotOnTouch(i);
-                if (slot != null)
+                //Check if game is over
+                if (turn == GameState.GameEnd)
                 {
-                    switch (turn)
+                    switch (gameMode)
                     {
-                        case -1:
-                            //Select start
-                            if (slot.slotID >= 0 && slot.slotID <= 6)
+                        case GameMode.bestOf:
+                            int requiredWins = Mathf.CeilToInt((1.0f + miscNum * 2.0f) / 2.0f);
+                            Debug.Log(requiredWins);
+                            if (wins[0] >= requiredWins || wins[1] >= requiredWins)
                             {
-                                nextSlot[0] = slot.slotID;
-                                popSource.PlayOneShot(pop);
-                            }
-                            else if (slot.slotID >= 8 && slot.slotID < 15)
-                            {
-                                nextSlot[1] = slot.slotID;
-                                popSource.PlayOneShot(pop);
-                            }
-
-
-                            if (nextSlot[0] > -1 && nextSlot[1] > -1)
-                            {
-                                //Start Game
-                                turn = 0;
-                                //Give player marbles
-                                slots[nextSlot[0]].SurrenderMarbles(0);
-                                slots[nextSlot[1]].SurrenderMarbles(1);
-                                //Move Slot by 1
-                                ProgressSlot(0);
-                                ProgressSlot(1);
+                                SceneManager.LoadScene(mainMenuName);
+                            } else
+                            {                                
+                                ResetMarbles();
                             }
                             break;
-                        case 0:
-                            //First Turn
-                            PlayerTurn(0, slot);
-                            PlayerTurn(1, slot);
-
-                            //Record who done first. He will move next
-                            if (doneFirst < 0)
-                            {
-                                if (turnDone[0])
-                                {
-                                    doneFirst = 0;
-                                }
-                                else if (turnDone[1])
-                                {
-                                    doneFirst = 1;
-                                }
-                            }
-
-                            //Setup Next TUrn
-                            if (turnDone[0] && turnDone[1])
-                            {
-                                turn = doneFirst + 1;
-                                SetupTurn(doneFirst);
-                            }
+                        case GameMode.burningVillages:
+                            CheckForBurned();
                             break;
-                        case 1:
-                            //P1 Turn
-                            PlayerTurn(0, slot);
-
-                            if (turnDone[0])
-                            {
-                                if (PlayerValidSlotsNumber(1) > 0)
-                                {
-                                    SetupTurn(1);
-                                }
-                                else
-                                {
-                                    SetupTurn(0);
-                                }
-                            }
-                            break;
-                        case 2:
-                            //P2 Turn
-                            PlayerTurn(1, slot);
-
-                            if (turnDone[1])
-                            {
-                                if (PlayerValidSlotsNumber(0) > 0)
-                                {
-                                    SetupTurn(0);
-                                }
-                                else
-                                {
-                                    SetupTurn(1);
-                                }
-                            }
-                            break;
-                        case 3:
-                            switch (gameMode)
-                            {
-                                case GameMode.bestOf:
-                                    slots[15].SurrenderMarbles(0);
-                                    slots[7].SurrenderMarbles(0);
-
-                                    int target = 0;
-                                    foreach(GameObject marble in marblesHand[0].ToArray())
-                                    {
-                                        if (slots[target].MarbleAmount() == 7)
-                                        {
-                                            target++;
-                                            if (target == 7)
-                                            {
-                                                target++;
-                                            }
-                                        } else
-                                        {
-                                            slots[target].StoreMarbles(marble);
-                                            marblesHand[0].Remove(marble);
-                                        }
-                                    }
-                                    switch (startStyle)
-                                    {
-                                        case StartStyle.P1:
-                                            turn = 1;
-                                            nextSlot[1] = -2;
-                                            break;
-                                        case StartStyle.P2:
-                                            turn = 2;
-                                            nextSlot[0] = -2;
-                                            break;
-                                        case StartStyle.together:
-                                            turn = -1;
-                                            break;
-                                    }
-                                    break;
-                            }
-                            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        case GameMode.speedCongkak:
                             break;
                     }
 
+                    SetupTurn((int)startStyle);
                     UpdateSlotSprite();
+                } else
+                {
+                    Slot slot = FindSlotOnTouch(i);
+                    if (slot != null)
+                    {
+                        switch (turn)
+                        {
+                            case GameState.PickingStartSlot:
+                                //Select start
+                                if (slot.slotID >= 0 && slot.slotID <= 6)
+                                {
+                                    nextSlot[0] = slot.slotID;
+                                    popSource.PlayOneShot(pop);
+                                }
+                                else if (slot.slotID >= 8 && slot.slotID < 15)
+                                {
+                                    nextSlot[1] = slot.slotID;
+                                    popSource.PlayOneShot(pop);
+                                }
+
+
+                                if (nextSlot[0] > -1 && nextSlot[1] > -1)
+                                {
+                                    //Start Game
+                                    turn = GameState.BothTurns;
+                                    //Give player marbles
+                                    slots[nextSlot[0]].SurrenderMarbles(0);
+                                    slots[nextSlot[1]].SurrenderMarbles(1);
+                                    //Move Slot by 1
+                                    ProgressSlot(0);
+                                    ProgressSlot(1);
+                                }
+                                break;
+                            case GameState.BothTurns:
+                                //First Turn
+                                PlayerTurn(0, slot);
+                                PlayerTurn(1, slot);
+
+                                //Record who done first. He will move next
+                                if (doneFirst < 0)
+                                {
+                                    if (turnDone[0])
+                                    {
+                                        doneFirst = 0;
+                                    }
+                                    else if (turnDone[1])
+                                    {
+                                        doneFirst = 1;
+                                    }
+                                }
+
+                                //Setup Next TUrn
+                                if (turnDone[0] && turnDone[1])
+                                {
+                                    turn = (GameState)((int)GameState.P1Turn + 1);
+                                    SetupTurn(doneFirst);
+                                }
+                                break;
+                            case GameState.P1Turn:
+                                //P1 Turn
+                                PlayerTurn(0, slot);
+
+                                if (turnDone[0])
+                                {
+                                    if (PlayerValidSlotsNumber(1) > 0)
+                                    {
+                                        SetupTurn(1);
+                                    }
+                                    else
+                                    {
+                                        SetupTurn(0);
+                                    }
+                                }
+                                break;
+                            case GameState.P2Turn:
+                                //P2 Turn
+                                PlayerTurn(1, slot);
+
+                                if (turnDone[1])
+                                {
+                                    if (PlayerValidSlotsNumber(0) > 0)
+                                    {
+                                        SetupTurn(0);
+                                    }
+                                    else
+                                    {
+                                        SetupTurn(1);
+                                    }
+                                }
+                                break;
+                        }
+
+                        UpdateSlotSprite();
+                    }
                 }
             }
 
             //Game End
-            if (PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
+            if (turn != GameState.GameEnd && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
             {
-                turn = 3;
+                turn = GameState.GameEnd;
                 if (gameMode == GameMode.bestOf)
                 {
                     if (slots[7].MarbleAmount() > slots[15].MarbleAmount())
@@ -329,10 +326,75 @@ public class Game : MonoBehaviour {
                     {
                         wins[0]++;
                     }
+                    winsText.text = wins[0] + "-" + wins[1];
                 }
             }
             
         }
+    }
+
+    private void CheckForBurned()
+    {
+        slots[15].SurrenderMarbles(0);
+        int target = 0;
+        foreach (GameObject marble in marblesHand[0])
+        {
+            if (slots[target].MarbleAmount() == marblePerSlot)
+            {
+                target++;
+                if (target == 7)
+                {
+                    break;
+                }
+            }
+            slots[target].StoreMarbles(marble);
+            marblesHand[0].Remove(marble);
+        }
+        slots[15].StoreMarbles(marblesHand[0]);
+
+        slots[7].SurrenderMarbles(1);
+        target = 8;
+        foreach (GameObject marble in marblesHand[1])
+        {
+            if (slots[target].MarbleAmount() == marblePerSlot)
+            {
+                target++;
+                if (target == 15)
+                {
+                    break;
+                }
+            }
+            slots[target].StoreMarbles(marble);
+            marblesHand[1].Remove(marble);
+        }
+        slots[15].StoreMarbles(marblesHand[0]);
+    }
+
+    private void ResetMarbles()
+    {
+        //Move all marbles to one list
+        slots[15].SurrenderMarbles(0);
+        slots[7].SurrenderMarbles(0);
+
+        //Place all marble in their places
+        int target = 0;
+        foreach (GameObject marble in marblesHand[0])
+        {
+            if (slots[target].MarbleAmount() == 1)
+            {
+                target++;
+                if (target == 7)
+                {
+                    target++;
+                }
+                else if (target > 14)
+                {
+                    break;
+                }
+            }
+            slots[target].StoreMarbles(marble);
+        }
+        marblesHand[0] = new List<GameObject>();
     }
 
     private void SetupTurn(int player)
@@ -342,14 +404,20 @@ public class Game : MonoBehaviour {
         switch (player)
         {
             case 0:
-                turn = 1;
+                turn = GameState.P1Turn;
                 nextSlot[0] = -1;
                 nextSlot[1] = -2;
                 break;
             case 1:
-                turn = 2;
+                turn = GameState.P2Turn;
                 nextSlot[1] = -1;
                 nextSlot[0] = -2;
+                break;
+            case 2:
+                turn = GameState.PickingStartSlot;
+                nextSlot[0] = -1;
+                nextSlot[1] = -1;
+                doneFirst = -1;
                 break;
         }
     }
@@ -405,7 +473,13 @@ public class Game : MonoBehaviour {
                         //Select any when last marble is home
                         if ((player == 0 && slot.slotID == 15) || (player == 1 && slot.slotID == 7))
                         {
-                            nextSlot[player] = -1;
+                            if (PlayerValidSlotsNumber(player) > 0)
+                            {
+                                nextSlot[player] = -1;
+                            } else
+                            {
+                                turnDone[player] = true;
+                            }
                         }
                         else if (slot.MarbleAmount() > 1)
                         {
