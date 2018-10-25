@@ -64,7 +64,7 @@ public class Game : MonoBehaviour {
 
     //game mode variables
     private int[] wins = { 0, 0 };
-    private int[] timeRemaining = { 0, 0 };
+    private float[] timeRemaining = { 0, 0 };
 
     [Header("Interface")]
     [SerializeField] GameObject[] texts;
@@ -127,6 +127,45 @@ public class Game : MonoBehaviour {
 	
 	void Update ()
     {
+        UpdateSlotSprite();
+
+        //Time
+        if (gameMode == GameMode.speedCongkak)
+        {
+            switch (turn)
+            {
+                case GameState.BothTurns:
+                    timeRemaining[0] -= Time.deltaTime;
+                    timeRemaining[1] -= Time.deltaTime;
+                    if (timeRemaining[0] <= 0)
+                    {
+                        turnDone[0] = true;
+                    }
+                    if (timeRemaining[1] <= 0)
+                    {
+                        turnDone[1] = true;
+                    }
+                    break;
+                case GameState.P1Turn:
+                    timeRemaining[0] -= Time.deltaTime;
+                    if (timeRemaining[0] <= 0)
+                    {
+                        turnDone[0] = true;
+                    }
+                    break;
+                case GameState.P2Turn:
+                    timeRemaining[1] -= Time.deltaTime;
+                    if (timeRemaining[1] <= 0)
+                    {
+                        turnDone[1] = true;
+                    }
+                    break;
+            }
+
+            timeBar[0].transform.localScale = new Vector3(timeRemaining[0] / (miscNum + 1), 1, 1);
+            timeBar[1].transform.localScale = new Vector3(timeRemaining[1] / (miscNum + 1), 1, 1);
+        }
+
         //Move marbles
         for (int x = 0; x < 2; x++)
         {
@@ -214,6 +253,7 @@ public class Game : MonoBehaviour {
                             }
                             break;
                         case GameMode.speedCongkak:
+                            SceneManager.LoadScene(mainMenuName);
                             break;
                     }
 
@@ -256,62 +296,16 @@ public class Game : MonoBehaviour {
                                 //First Turn
                                 PlayerTurn(0, slot);
                                 PlayerTurn(1, slot);
-
-                                //Record who done first. He will move next
-                                if (doneFirst < 0)
-                                {
-                                    if (turnDone[0])
-                                    {
-                                        doneFirst = 0;
-                                    }
-                                    else if (turnDone[1])
-                                    {
-                                        doneFirst = 1;
-                                    }
-                                }
-
-                                //Setup Next TUrn
-                                if (turnDone[0] && turnDone[1])
-                                {
-                                    turn = (GameState)((int)GameState.P1Turn + 1);
-                                    SetupTurn(doneFirst);
-                                }
                                 break;
                             case GameState.P1Turn:
                                 //P1 Turn
                                 PlayerTurn(0, slot);
-
-                                if (turnDone[0])
-                                {
-                                    if (PlayerValidSlotsNumber(1) > 0)
-                                    {
-                                        SetupTurn(1);
-                                    }
-                                    else
-                                    {
-                                        SetupTurn(0);
-                                    }
-                                }
                                 break;
                             case GameState.P2Turn:
                                 //P2 Turn
                                 PlayerTurn(1, slot);
-
-                                if (turnDone[1])
-                                {
-                                    if (PlayerValidSlotsNumber(0) > 0)
-                                    {
-                                        SetupTurn(0);
-                                    }
-                                    else
-                                    {
-                                        SetupTurn(1);
-                                    }
-                                }
                                 break;
                         }
-
-                        UpdateSlotSprite();
                     }
                 }
             }
@@ -333,7 +327,60 @@ public class Game : MonoBehaviour {
                     winsText.text = wins[0] + "-" + wins[1];
                 }
             }
-            
+
+
+        }
+               
+        //Turn Done Detector
+        switch (turn)
+        {
+            case GameState.BothTurns:
+                //Record who done first. He will move next
+                if (doneFirst < 0)
+                {
+                    if (turnDone[0])
+                    {
+                        doneFirst = 0;
+                    }
+                    else if (turnDone[1])
+                    {
+                        doneFirst = 1;
+                    }
+                }
+
+                //Setup Next TUrn
+                if (turnDone[0] && turnDone[1])
+                {
+                    turn = (GameState)((int)GameState.P1Turn + 1);
+                    SetupTurn(doneFirst);
+                }
+                break;
+            case GameState.P1Turn:
+                if (turnDone[0])
+                {
+                    if (PlayerValidSlotsNumber(1) > 0)
+                    {
+                        SetupTurn(1);
+                    }
+                    else
+                    {
+                        SetupTurn(0);
+                    }
+                }
+                break;
+            case GameState.P2Turn:
+                if (turnDone[1])
+                {
+                    if (PlayerValidSlotsNumber(0) > 0)
+                    {
+                        SetupTurn(0);
+                    }
+                    else
+                    {
+                        SetupTurn(1);
+                    }
+                }
+                break;
         }
     }
 
@@ -425,17 +472,32 @@ public class Game : MonoBehaviour {
                 turn = GameState.P1Turn;
                 nextSlot[0] = -1;
                 nextSlot[1] = -2;
+                if (gameMode == GameMode.speedCongkak)
+                {
+                    timeRemaining[0] = miscNum + 1;
+                    timeRemaining[1] = 0;
+                }
                 break;
             case 1:
                 turn = GameState.P2Turn;
                 nextSlot[1] = -1;
                 nextSlot[0] = -2;
+                if (gameMode == GameMode.speedCongkak)
+                {
+                    timeRemaining[1] = miscNum + 1;
+                    timeRemaining[0] = 0;
+                }
                 break;
             case 2:
                 turn = GameState.PickingStartSlot;
                 nextSlot[0] = -1;
                 nextSlot[1] = -1;
                 doneFirst = -1;
+                if (gameMode == GameMode.speedCongkak)
+                {
+                    timeRemaining[0] = miscNum + 1;
+                    timeRemaining[1] = miscNum + 1;
+                }
                 break;
         }
     }
@@ -470,6 +532,11 @@ public class Game : MonoBehaviour {
                     nextSlot[player] = slot.slotID;
                     ProgressSlot(player);
 
+                    if (gameMode == GameMode.speedCongkak)
+                    {
+                        timeRemaining[player] = miscNum;
+                    }
+
                     popSource.PlayOneShot(take);
                 }
             }
@@ -482,6 +549,11 @@ public class Game : MonoBehaviour {
                     slot.StoreMarbles(marblesHand[player][0]);
                     marblesHand[player].RemoveAt(0);
                     ProgressSlot(player);
+
+                    if (gameMode == GameMode.speedCongkak)
+                    {
+                        timeRemaining[player] = miscNum;
+                    }
 
                     popSource.PlayOneShot(pop);
 
