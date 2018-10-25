@@ -197,7 +197,6 @@ public class Game : MonoBehaviour {
                     {
                         case GameMode.bestOf:
                             int requiredWins = Mathf.CeilToInt((1.0f + miscNum * 2.0f) / 2.0f);
-                            Debug.Log(requiredWins);
                             if (wins[0] >= requiredWins || wins[1] >= requiredWins)
                             {
                                 SceneManager.LoadScene(mainMenuName);
@@ -208,6 +207,11 @@ public class Game : MonoBehaviour {
                             break;
                         case GameMode.burningVillages:
                             CheckForBurned();
+
+                            if (noGoSlots[0].Count - 1 > miscNum + 1)
+                            {
+                                SceneManager.LoadScene(mainMenuName);
+                            }
                             break;
                         case GameMode.speedCongkak:
                             break;
@@ -337,12 +341,12 @@ public class Game : MonoBehaviour {
     {
         slots[15].SurrenderMarbles(0);
         int target = 0;
-        foreach (GameObject marble in marblesHand[0])
+        foreach (GameObject marble in marblesHand[0].ToArray())
         {
             if (slots[target].MarbleAmount() == marblePerSlot)
             {
                 target++;
-                if (target == 7)
+                if (noGoSlots[0].Contains(target))
                 {
                     break;
                 }
@@ -351,15 +355,16 @@ public class Game : MonoBehaviour {
             marblesHand[0].Remove(marble);
         }
         slots[15].StoreMarbles(marblesHand[0]);
+        marblesHand[0] = new List<GameObject>();
 
         slots[7].SurrenderMarbles(1);
         target = 8;
-        foreach (GameObject marble in marblesHand[1])
+        foreach (GameObject marble in marblesHand[1].ToArray())
         {
             if (slots[target].MarbleAmount() == marblePerSlot)
             {
                 target++;
-                if (target == 15)
+                if (noGoSlots[0].Contains(target))
                 {
                     break;
                 }
@@ -367,7 +372,20 @@ public class Game : MonoBehaviour {
             slots[target].StoreMarbles(marble);
             marblesHand[1].Remove(marble);
         }
-        slots[15].StoreMarbles(marblesHand[0]);
+        slots[7].StoreMarbles(marblesHand[1]);
+        marblesHand[1] = new List<GameObject>();
+
+        foreach (Slot i in slots)
+        {
+            bool empty = i.MarbleAmount() <= 0;
+            bool notHome = i.slotID != 7 && i.slotID != 15;
+            bool notNoGo = !noGoSlots[0].Contains(i.slotID) && !noGoSlots[1].Contains(i.slotID);
+            if (empty && notHome && notNoGo)
+            {
+                noGoSlots[0].Add(i.slotID);
+                noGoSlots[1].Add(i.slotID);
+            }
+        }
     }
 
     private void ResetMarbles()
@@ -378,7 +396,7 @@ public class Game : MonoBehaviour {
 
         //Place all marble in their places
         int target = 0;
-        foreach (GameObject marble in marblesHand[0])
+        foreach (GameObject marble in marblesHand[0].ToArray())
         {
             if (slots[target].MarbleAmount() == 1)
             {
