@@ -13,20 +13,30 @@ public class ModeSelect : MonoBehaviour {
     [SerializeField] private Slider miscSlider;
     [SerializeField] private Text startText;
     [SerializeField] private Slider startSlider;
+    [SerializeField] private Text numText;
+    [SerializeField] private Slider numSlider;
 
     [SerializeField] private string gameSceneName;
+    [SerializeField] private string mainMenuSceneName;
 
     // Use this for initialization
     void Start () {
         ChangeMode();
         ChangeMisc();
         ChangeStartStyle();
+        ChangeMarbleNum();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    public void ChangeMarbleNum()
+    {
+        Game.marblePerSlot = (int) numSlider.value;
+        numText.text = ((int)numSlider.value + 1) + " Marbles per Village";
+    }
 
     public void ChangeMode()
     {
@@ -59,7 +69,14 @@ public class ModeSelect : MonoBehaviour {
         switch ((int) modeSlider.value)
         {
             case 0:
-                miscText.text = (1 + miscSlider.value * 2) + " Round(s)";
+                int rounds = (int) (1 + miscSlider.value * 2);
+                if (rounds == 1)
+                {
+                    miscText.text = 1 + " Round";
+                } else
+                {
+                    miscText.text = rounds + " Rounds";
+                }
                 break;
             case 1:
                 miscText.text = (1 + miscSlider.value) + " Burnt Villages max";
@@ -91,5 +108,10 @@ public class ModeSelect : MonoBehaviour {
     public void Startgame()
     {
         SceneManager.LoadScene(gameSceneName);
+    }
+
+    public void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 }
