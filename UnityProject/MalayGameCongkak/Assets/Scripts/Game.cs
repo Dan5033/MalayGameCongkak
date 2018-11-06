@@ -37,48 +37,48 @@ public class Game : MonoBehaviour {
     public static StartStyle startStyle = StartStyle.together;
     public static GameMode gameMode = GameMode.bestOf;
     public static int miscNum = 1;
-
-    [Header("Prefabs")]
-    [SerializeField] private GameObject prefabMarble;
-
-    [Header("Preset Objects")]
-    [SerializeField] private Slot[] slots;
-
-    [Header("Slot Sprites")]
-    [SerializeField] private Sprite sprDef;
-    [SerializeField] private Sprite[] sprPlayer;
-    [SerializeField] private Sprite sprP01;
-
-    [Header("Hand")]
-    [SerializeField] private float speed = 20;
-    [SerializeField] private GameObject[] handObject;
-    private List<GameObject>[] marblesHand = { new List<GameObject>(), new List<GameObject>() };
-
-    [Header("Game")]
-    private int[] nextSlot = { -1, -1 };
-    private bool[] turnDone = { false, false };
-    private int doneFirst = -1;
-    public GameState turn = GameState.PickingStartSlot;
-    private List<int>[] noGoSlots = { new List<int> { 7 }, new List<int> { 15 } };
-
-    //game mode variables
-    private int[] wins = { 0, 0 };
-    private float[] timeRemaining = { 0, 0 };
     public static int marblePerSlot = 7;
 
+    [Header("Prefabs")]
+    [SerializeField] protected GameObject prefabMarble;
+
+    [Header("Preset Objects")]
+    [SerializeField] protected Slot[] slots;
+
+    [Header("Slot Sprites")]
+    [SerializeField] protected Sprite sprDef;
+    [SerializeField] protected Sprite[] sprPlayer;
+    [SerializeField] protected Sprite sprP01;
+
+    [Header("Hand")]
+    [SerializeField] protected float speed = 20;
+    [SerializeField] protected GameObject[] handObject;
+    protected List<GameObject>[] marblesHand = { new List<GameObject>(), new List<GameObject>() };
+
+    [Header("Game")]
+    protected int[] nextSlot = { -1, -1 };
+    protected bool[] turnDone = { false, false };
+    protected int doneFirst = -1;
+    public GameState turn = GameState.PickingStartSlot;
+    protected List<int>[] noGoSlots = { new List<int> { 7 }, new List<int> { 15 } };
+
+    //game mode variables
+    protected int[] wins = { 0, 0 };
+    protected float[] timeRemaining = { 0, 0 };
+
     [Header("Interface")]
-    [SerializeField] GameObject[] texts;
-    [SerializeField] Text winsText;
-    [SerializeField] Image[] timeBar;
+    [SerializeField] protected GameObject[] texts;
+    [SerializeField] protected Text winsText;
+    [SerializeField] protected Image[] timeBar;
 
     [Header("Sounds")]
-    [SerializeField] private AudioSource popSource;
-    [SerializeField] private AudioClip pop;
-    [SerializeField] private AudioClip take;
-    [SerializeField] private AudioClip money;
+    [SerializeField] protected AudioSource popSource;
+    [SerializeField] protected AudioClip pop;
+    [SerializeField] protected AudioClip take;
+    [SerializeField] protected AudioClip money;
 
     [Header("Scenes")]
-    [SerializeField] private string mainMenuName;
+    [SerializeField] protected string mainMenuName;
 
 	void Start ()
     {
@@ -127,103 +127,18 @@ public class Game : MonoBehaviour {
 	
 	void Update ()
     {
+        //Move marbles
+        MoveHandMarbles();
+
         if (turn != GameState.Paused)
         {
             UpdateSlotSprite();
 
             //Time
-            if (gameMode == GameMode.speedCongkak)
-            {
-                switch (turn)
-                {
-                    case GameState.BothTurns:
-                        timeRemaining[0] -= Time.deltaTime;
-                        timeRemaining[1] -= Time.deltaTime;
-                        if (timeRemaining[0] <= 0)
-                        {
-                            turnDone[0] = true;
-                        }
-                        if (timeRemaining[1] <= 0)
-                        {
-                            turnDone[1] = true;
-                        }
-                        break;
-                    case GameState.P1Turn:
-                        timeRemaining[0] -= Time.deltaTime;
-                        if (timeRemaining[0] <= 0)
-                        {
-                            turnDone[0] = true;
-                        }
-                        break;
-                    case GameState.P2Turn:
-                        timeRemaining[1] -= Time.deltaTime;
-                        if (timeRemaining[1] <= 0)
-                        {
-                            turnDone[1] = true;
-                        }
-                        break;
-                }
-
-                timeBar[0].transform.localScale = new Vector3(timeRemaining[0] / (miscNum + 1), 1, 1);
-                timeBar[1].transform.localScale = new Vector3(timeRemaining[1] / (miscNum + 1), 1, 1);
-            }
-
-            //Move marbles
-            for (int x = 0; x < 2; x++)
-            {
-                foreach (GameObject i in marblesHand[x])
-                {
-                    i.GetComponent<Rigidbody2D>().velocity = (handObject[x].transform.position - i.transform.position).normalized * speed;
-                }
-            }
+            ProgressTime();
 
             //Text Display
-            switch (turn)
-            {
-                case GameState.PickingStartSlot:
-                    texts[0].GetComponent<Text>().text = "Choose Starting Village";
-                    texts[1].GetComponent<Text>().text = "Choose Starting Village";
-                    break;
-                case GameState.BothTurns:
-                    texts[0].GetComponent<Text>().text = "Go!";
-                    texts[1].GetComponent<Text>().text = "Go!";
-                    break;
-                case GameState.P1Turn:
-                    texts[0].GetComponent<Text>().text = "Your Turn";
-                    texts[1].GetComponent<Text>().text = "";
-                    break;
-                case GameState.P2Turn:
-                    texts[0].GetComponent<Text>().text = "";
-                    texts[1].GetComponent<Text>().text = "Your Turn";
-                    break;
-                case GameState.GameEnd:
-                    int am1 = slots[15].GetComponent<Slot>().MarbleAmount();
-                    int am2 = slots[7].GetComponent<Slot>().MarbleAmount();
-                    if (am1 > am2)
-                    {
-                        texts[0].GetComponent<Text>().text = "You Win";
-                        texts[1].GetComponent<Text>().text = "You Lose";
-                    }
-                    else if (am2 > am1)
-                    {
-                        texts[0].GetComponent<Text>().text = "You Lose";
-                        texts[1].GetComponent<Text>().text = "You Win";
-                    }
-                    else
-                    {
-                        texts[0].GetComponent<Text>().text = "Draw";
-                        texts[1].GetComponent<Text>().text = "Draw";
-                    }
-                    break;
-                case GameState.Paused:
-                    texts[0].GetComponent<Text>().text = "Paused";
-                    texts[1].GetComponent<Text>().text = "Paused";
-                    break;
-                case GameState.Animating:
-                    texts[0].GetComponent<Text>().text = "";
-                    texts[1].GetComponent<Text>().text = "";
-                    break;
-            }
+            InstructionDisplay();
 
             //Click Input
             Touch[] touches = Input.touches;
@@ -389,7 +304,107 @@ public class Game : MonoBehaviour {
         }
     }
 
-    private void CheckForBurned()
+    protected void InstructionDisplay()
+    {
+        switch (turn)
+        {
+            case GameState.PickingStartSlot:
+                texts[0].GetComponent<Text>().text = "Choose Starting Village";
+                texts[1].GetComponent<Text>().text = "Choose Starting Village";
+                break;
+            case GameState.BothTurns:
+                texts[0].GetComponent<Text>().text = "Go!";
+                texts[1].GetComponent<Text>().text = "Go!";
+                break;
+            case GameState.P1Turn:
+                texts[0].GetComponent<Text>().text = "Your Turn";
+                texts[1].GetComponent<Text>().text = "";
+                break;
+            case GameState.P2Turn:
+                texts[0].GetComponent<Text>().text = "";
+                texts[1].GetComponent<Text>().text = "Your Turn";
+                break;
+            case GameState.GameEnd:
+                int am1 = slots[15].GetComponent<Slot>().MarbleAmount();
+                int am2 = slots[7].GetComponent<Slot>().MarbleAmount();
+                if (am1 > am2)
+                {
+                    texts[0].GetComponent<Text>().text = "You Win";
+                    texts[1].GetComponent<Text>().text = "You Lose";
+                }
+                else if (am2 > am1)
+                {
+                    texts[0].GetComponent<Text>().text = "You Lose";
+                    texts[1].GetComponent<Text>().text = "You Win";
+                }
+                else
+                {
+                    texts[0].GetComponent<Text>().text = "Draw";
+                    texts[1].GetComponent<Text>().text = "Draw";
+                }
+                break;
+            case GameState.Paused:
+                texts[0].GetComponent<Text>().text = "Paused";
+                texts[1].GetComponent<Text>().text = "Paused";
+                break;
+            case GameState.Animating:
+                texts[0].GetComponent<Text>().text = "";
+                texts[1].GetComponent<Text>().text = "";
+                break;
+        }
+    }
+
+    protected void MoveHandMarbles()
+    {
+        for (int x = 0; x < 2; x++)
+        {
+            foreach (GameObject i in marblesHand[x])
+            {
+                i.GetComponent<Rigidbody2D>().velocity = (handObject[x].transform.position - i.transform.position).normalized * speed;
+            }
+        }
+    }
+
+    protected void ProgressTime()
+    {
+        if (gameMode == GameMode.speedCongkak)
+        {
+            switch (turn)
+            {
+                case GameState.BothTurns:
+                    timeRemaining[0] -= Time.deltaTime;
+                    timeRemaining[1] -= Time.deltaTime;
+                    if (timeRemaining[0] <= 0)
+                    {
+                        turnDone[0] = true;
+                    }
+                    if (timeRemaining[1] <= 0)
+                    {
+                        turnDone[1] = true;
+                    }
+                    break;
+                case GameState.P1Turn:
+                    timeRemaining[0] -= Time.deltaTime;
+                    if (timeRemaining[0] <= 0)
+                    {
+                        turnDone[0] = true;
+                    }
+                    break;
+                case GameState.P2Turn:
+                    timeRemaining[1] -= Time.deltaTime;
+                    if (timeRemaining[1] <= 0)
+                    {
+                        turnDone[1] = true;
+                    }
+                    break;
+            }
+
+            timeBar[0].transform.localScale = new Vector3(timeRemaining[0] / (miscNum + 1), 1, 1);
+            timeBar[1].transform.localScale = new Vector3(timeRemaining[1] / (miscNum + 1), 1, 1);
+        }
+    }
+
+    protected void CheckForBurned()
     {
         slots[15].SurrenderMarbles(0);
         int target = 0;
@@ -416,7 +431,7 @@ public class Game : MonoBehaviour {
             if (slots[target].MarbleAmount() == marblePerSlot)
             {
                 target++;
-                if (noGoSlots[0].Contains(target))
+                if (noGoSlots[1].Contains(target))
                 {
                     break;
                 }
@@ -440,7 +455,7 @@ public class Game : MonoBehaviour {
         }
     }
 
-    private void ResetMarbles()
+    protected void ResetMarbles()
     {
         //Move all marbles to one list
         slots[15].SurrenderMarbles(0);
@@ -450,7 +465,7 @@ public class Game : MonoBehaviour {
         int target = 0;
         foreach (GameObject marble in marblesHand[0].ToArray())
         {
-            if (slots[target].MarbleAmount() == 1)
+            if (slots[target].MarbleAmount() == marblePerSlot)
             {
                 target++;
                 if (target == 7)
@@ -467,7 +482,7 @@ public class Game : MonoBehaviour {
         marblesHand[0] = new List<GameObject>();
     }
 
-    private void SetupTurn(int player)
+    protected void SetupTurn(int player)
     {
         turnDone[0] = false;
         turnDone[1] = false;
@@ -507,7 +522,7 @@ public class Game : MonoBehaviour {
         }
     }
 
-    private int PlayerValidSlotsNumber(int player)
+    protected int PlayerValidSlotsNumber(int player)
     {
         int amount = 0;
 
@@ -522,7 +537,7 @@ public class Game : MonoBehaviour {
         return amount;
     }
 
-    private void PlayerTurn(int player, Slot slot)
+    protected void PlayerTurn(int player, Slot slot)
     {
         if (!turnDone[player])
         {
@@ -615,7 +630,7 @@ public class Game : MonoBehaviour {
         }
     }
 
-    private Slot FindSlotOnTouch(Touch touch)
+    protected Slot FindSlotOnTouch(Touch touch)
     {
         RaycastHit2D[] ray = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(touch.position), Vector2.zero);
         if (ray.Length > 0)
@@ -632,7 +647,7 @@ public class Game : MonoBehaviour {
         return null;
     }
 
-    private void ProgressSlot(int player)
+    protected void ProgressSlot(int player)
     {
         //Progress clock wise
         nextSlot[player] = (int)Mathf.Repeat(nextSlot[player] - 1, 16);
@@ -651,7 +666,7 @@ public class Game : MonoBehaviour {
         }
     }
 
-    void UpdateSlotSprite()
+    protected void UpdateSlotSprite()
     {
         //Reset all slots
         for (int i = 0; i < 16; i++)

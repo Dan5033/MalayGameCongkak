@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour {
 
     [Header("Scene Names")]
     [SerializeField] private string modeSelectName = "";
+    [SerializeField] private string diffSelectName = "";
 
 	// Use this for initialization
 	void Start () {
@@ -21,6 +22,11 @@ public class MainMenu : MonoBehaviour {
     public void GoToModeSelection()
     {
         SceneManager.LoadScene(modeSelectName);
+    }
+
+    public void GoToDifficultySelection()
+    {
+        SceneManager.LoadScene(diffSelectName);
     }
 
     public void CloseGame()
