@@ -29,6 +29,15 @@ public enum GameState
     Animating
 }
 
+public enum AfterStyle
+{
+    RoundWinner,
+    RoundLoser,
+    P1Start,
+    P2Start,
+    StartTogether
+}
+
 public class Game : MonoBehaviour {
 
     public static Game instance;
@@ -38,6 +47,7 @@ public class Game : MonoBehaviour {
     public static GameMode gameMode = GameMode.bestOf;
     public static int miscNum = 1;
     public static int marblePerSlot = 7;
+    public static AfterStyle afterStyle = AfterStyle.StartTogether;
 
     [Header("Prefabs")]
     [SerializeField] protected GameObject prefabMarble;
@@ -79,6 +89,7 @@ public class Game : MonoBehaviour {
 
     [Header("Scenes")]
     [SerializeField] protected string mainMenuName;
+    protected int winner = -1;
 
 	void Start ()
     {
@@ -141,7 +152,15 @@ public class Game : MonoBehaviour {
             InstructionDisplay();
 
             //Click Input
-            Touch[] touches = Input.touches;
+            //Touch[] touches = Input.touches;
+
+            Touch[] touches = new Touch[1];
+            if (Input.GetMouseButtonDown(0))
+            {
+                touches[0] = new Touch();
+                touches[0].phase = TouchPhase.Began;
+                touches[0].position = Input.mousePosition;
+            }
             foreach (Touch i in touches)
             {
                 if (i.phase == TouchPhase.Began)
@@ -175,7 +194,30 @@ public class Game : MonoBehaviour {
                                 break;
                         }
 
-                        SetupTurn((int)startStyle);
+                        switch (afterStyle)
+                        {
+                            case AfterStyle.StartTogether:
+                                SetupTurn((int) StartStyle.together);
+                                break;
+                            case AfterStyle.P1Start:
+                                SetupTurn((int) StartStyle.P1);
+                                break;
+                            case AfterStyle.P2Start:
+                                SetupTurn((int) StartStyle.P2);
+                                break;
+                            case AfterStyle.RoundLoser:
+                                if (winner == 0)
+                                {
+                                    SetupTurn(1);
+                                } else
+                                {
+                                    SetupTurn(0);
+                                }
+                                break;
+                            case AfterStyle.RoundWinner:
+                                SetupTurn(winner);
+                                break;
+                        }
                         UpdateSlotSprite();
                     }
                     else
@@ -238,10 +280,12 @@ public class Game : MonoBehaviour {
                         if (slots[7].MarbleAmount() > slots[15].MarbleAmount())
                         {
                             wins[1]++;
+                            winner = 1;
                         }
                         else if (slots[7].MarbleAmount() < slots[15].MarbleAmount())
                         {
                             wins[0]++;
+                            winner = 0;
                         }
                         winsText.text = wins[0] + "-" + wins[1];
                     }
@@ -358,9 +402,11 @@ public class Game : MonoBehaviour {
     {
         for (int x = 0; x < 2; x++)
         {
-            foreach (GameObject i in marblesHand[x])
+            for (int y = 0; y < marblesHand[x].Count; y++)
             {
-                i.GetComponent<Rigidbody2D>().velocity = (handObject[x].transform.position - i.transform.position).normalized * speed;
+                GameObject i = marblesHand[x][y];
+                Vector3 dest = new Vector3(i.transform.position.x, i.transform.position.y + 0.5f*y,0);
+                i.GetComponent<Rigidbody2D>().velocity = (handObject[x].transform.position - dest) * Time.deltaTime * speed;
             }
         }
     }

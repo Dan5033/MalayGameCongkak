@@ -12,25 +12,38 @@ public class MainMenu : MonoBehaviour {
 
     [Header("Adevertising")]
     public string bannerPlacement = "mainMenuBanner";
-    public bool testMode = false;
+    public bool testMode = true;
+
+    [Header("Move")]
+    public Rigidbody2D[] marbles;
 
     #if UNITY_IOS
         public const string gameID = "2894540";
     #elif UNITY_ANDROID
-        public const string gameID = "2864542";
+        public const string gameID = "2894542";
     #elif UNITY_EDITOR
-        public const string gameID = "1111111";
+            public const string gameID = "1111111";
     #endif
 
-    void Start ()
+    private void Awake()
     {
+        if (!Advertisement.isInitialized)
+        {
+            Advertisement.Initialize(gameID, testMode);  //// 1st parameter is String and 2nd is boolean
+        }
+    }
+
+    void Start ()
+    {   
         Advertisement.Initialize(gameID, testMode);
         StartCoroutine(ShowBannerWhenReady());
+
+        foreach (Rigidbody2D i in marbles)
+        {
+            i.velocity = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+            i.angularVelocity = Random.Range(-1, 1);
+        }
     }
-	
-	void Update () {
-		
-	}
 
     public void GoToModeSelection()
     {
@@ -55,5 +68,6 @@ public class MainMenu : MonoBehaviour {
             yield return new WaitForSeconds(0.5f);
         }
         Advertisement.Show(bannerPlacement);
+        
     }
 }

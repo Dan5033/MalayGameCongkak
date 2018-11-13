@@ -33,6 +33,7 @@ public class AIGame : Game {
         gameMode = GameMode.bestOf;
         miscNum = 2;
         marblePerSlot = 7;
+        afterStyle = AfterStyle.RoundLoser;
 
         //Create AISystem
         ai = new AI(difficulty);
@@ -158,7 +159,32 @@ public class AIGame : Game {
                                 break;
                         }
 
-                        SetupTurn((int)startStyle);
+                        switch (afterStyle)
+                        {
+                            case AfterStyle.StartTogether:
+                                SetupTurn((int)StartStyle.together);
+                                break;
+                            case AfterStyle.P1Start:
+                                SetupTurn((int)StartStyle.P1);
+                                break;
+                            case AfterStyle.P2Start:
+                                SetupTurn((int)StartStyle.P2);
+                                break;
+                            case AfterStyle.RoundLoser:
+                                if (winner == 0)
+                                {
+                                    SetupTurn(1);
+                                }
+                                else
+                                {
+                                    SetupTurn(0);
+                                }
+                                break;
+                            case AfterStyle.RoundWinner:
+                                SetupTurn(winner);
+                                break;
+                        }
+                        winner = -1;
                         UpdateSlotSprite();
                     }
                     else
@@ -210,10 +236,12 @@ public class AIGame : Game {
                         if (slots[7].MarbleAmount() > slots[15].MarbleAmount())
                         {
                             wins[1]++;
+                            winner = 1;
                         }
                         else if (slots[7].MarbleAmount() < slots[15].MarbleAmount())
                         {
                             wins[0]++;
+                            winner = 0;
                         }
                         winsText.text = wins[0] + "-" + wins[1];
                     }

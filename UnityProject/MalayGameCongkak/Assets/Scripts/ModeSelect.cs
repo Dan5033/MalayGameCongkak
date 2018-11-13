@@ -15,6 +15,8 @@ public class ModeSelect : MonoBehaviour {
     [SerializeField] private Slider startSlider;
     [SerializeField] private Text numText;
     [SerializeField] private Slider numSlider;
+    [SerializeField] private Text afterText;
+    [SerializeField] private Slider afterSlider;
 
     [SerializeField] private string gameSceneName;
     [SerializeField] private string mainMenuSceneName;
@@ -25,6 +27,7 @@ public class ModeSelect : MonoBehaviour {
         ChangeMisc();
         ChangeStartStyle();
         ChangeMarbleNum();
+        ChangeAfterStyle();
 	}
 	
 	// Update is called once per frame
@@ -35,7 +38,7 @@ public class ModeSelect : MonoBehaviour {
     public void ChangeMarbleNum()
     {
         Game.marblePerSlot = (int) numSlider.value;
-        numText.text = ((int)numSlider.value + 1) + " Marbles per Village";
+        numText.text = ((int)numSlider.value) + " Marbles per Village";
     }
 
     public void ChangeMode()
@@ -101,6 +104,29 @@ public class ModeSelect : MonoBehaviour {
                 break;
             case 2:
                 startText.text = "Start Together";
+                break;
+        }
+    }
+
+    public void ChangeAfterStyle()
+    {
+        Game.afterStyle = (AfterStyle) afterSlider.value;
+        switch ((int) afterSlider.value)
+        {
+            case 0:
+                afterText.text = "Round Winner Starts";
+                break;
+            case 1:
+                afterText.text = "Round Loser Starts";
+                break;
+            case 2:
+                afterText.text = "P1 Always Start";
+                break;
+            case 3:
+                afterText.text = "P2 Always Start";
+                break;
+            case 4:
+                afterText.text = "Always Start Together";
                 break;
         }
     }
