@@ -103,7 +103,6 @@ public class AI {
                 bestMove = i;
             }
         }
-        Debug.Log(bestMove);
         return highestScore;
     }
 

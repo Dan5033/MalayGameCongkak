@@ -22,6 +22,7 @@ public class EndGameScreen : MonoBehaviour {
 	
 	void Update ()
     {
+
 	}
 
     public void ReturnToMainMenu()
@@ -36,16 +37,31 @@ public class EndGameScreen : MonoBehaviour {
         VideoAdManager.DestroyAd();
     }
 
-    public void EnableCanvas()
+    public void EnableCanvas(bool ai)
     {
         endGameCanvas.enabled = true;
         StartCoroutine(MoveTitle());
-        if (Game.instance.winner == 0)
+
+        if (ai)
         {
-            winnerText.text = "P1 WINS";
+            if (Game.instance.winner == 0)
+            {
+                winnerText.text = "YOU WIN";
+            }
+            else
+            {
+                winnerText.text = "AI WINS";
+            }
         } else
         {
-            winnerText.text = "P2 WINS";
+            if (Game.instance.winner == 0)
+            {
+                winnerText.text = "P1 WINS";
+            }
+            else
+            {
+                winnerText.text = "P2 WINS";
+            }
         }
     }
 

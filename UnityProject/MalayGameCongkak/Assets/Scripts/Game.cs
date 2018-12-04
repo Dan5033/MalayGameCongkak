@@ -40,9 +40,9 @@ public class Game : MonoBehaviour {
     public static int marblePerSlot = 7;
     public static StartStyle startStyle = StartStyle.together;
     public static AfterStyle afterStyle = AfterStyle.StartTogether;
-    public static int roundsToWin = 0;
-    public static bool burntVillages = false;
-    public static float timePerTurn = 5;
+    public static int roundsToWin = 1;
+    public static bool burntVillages = true;
+    public static float timePerTurn = 0;
 
     [Header("Prefabs")]
     [SerializeField] protected GameObject prefabMarble;
@@ -324,7 +324,7 @@ public class Game : MonoBehaviour {
                             if (wins[0] == roundsToWin || wins[1] == roundsToWin)
                             {
                                 turn = GameState.ResultScreen;
-                                endGameScreen.EnableCanvas();
+                                endGameScreen.EnableCanvas(false);
                             }
                             else
                             {
@@ -336,9 +336,6 @@ public class Game : MonoBehaviour {
                             ResetMarbles();
                         }
                     }
-                    break;
-                case GameState.ResultScreen:
-                    Debug.Log("Do Nothing");
                     break;
             }
 

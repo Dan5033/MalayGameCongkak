@@ -13,7 +13,7 @@ public enum Difficulty
 
 public class AIGame : Game {
 
-    public static Difficulty difficulty = Difficulty.hard;
+    public static Difficulty difficulty = Difficulty.medium;
     private AI ai;
     private float aiThinking = 1;
     private float waitTime = 0;
@@ -231,7 +231,8 @@ public class AIGame : Game {
                         {
                             if (wins[0] == roundsToWin || wins[1] == roundsToWin)
                             {
-                                SceneManager.LoadScene(mainMenuName);
+                                turn = GameState.ResultScreen;
+                                endGameScreen.EnableCanvas(true);
                             }
                             else
                             {
@@ -247,7 +248,7 @@ public class AIGame : Game {
             }
 
             //Game End
-            if (turn != GameState.GameEnd && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
+            if (turn != GameState.ResultScreen && turn != GameState.GameEnd && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
             {
                 turn = GameState.GameEnd;
                 if (slots[7].MarbleAmount() > slots[15].MarbleAmount())
