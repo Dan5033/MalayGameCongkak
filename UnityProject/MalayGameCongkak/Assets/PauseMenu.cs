@@ -27,10 +27,12 @@ public class PauseMenu : MonoBehaviour {
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        VideoAdManager.DestroyAd();
     }
 
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene(mainMenuSceneName);
+        VideoAdManager.DestroyAd();
     }
 }

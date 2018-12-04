@@ -18,6 +18,7 @@ public enum GameState
     P1Turn,
     P2Turn,
     GameEnd,
+    ResultScreen,
     Paused,
     Animating
 }
@@ -65,7 +66,7 @@ public class Game : MonoBehaviour {
     protected int doneFirst = -1;
     public GameState turn = GameState.PickingStartSlot;
     protected List<int>[] noGoSlots = { new List<int> { 7 }, new List<int> { 15 } };
-    protected int winner = -1;
+    public int winner = -1;
 
     //game mode variables
     protected int[] wins = { 0, 0 };
@@ -76,6 +77,7 @@ public class Game : MonoBehaviour {
     [SerializeField] protected Text winsText;
     [SerializeField] protected Image[] timeBar;
     [SerializeField] protected GameObject fireAnimation;
+    [SerializeField] protected EndGameScreen endGameScreen;
 
     [Header("Sounds")]
     [SerializeField] protected AudioSource popSource;
@@ -321,7 +323,8 @@ public class Game : MonoBehaviour {
                         {
                             if (wins[0] == roundsToWin || wins[1] == roundsToWin)
                             {
-                                SceneManager.LoadScene(mainMenuName);
+                                turn = GameState.ResultScreen;
+                                endGameScreen.EnableCanvas();
                             }
                             else
                             {
@@ -334,10 +337,13 @@ public class Game : MonoBehaviour {
                         }
                     }
                     break;
+                case GameState.ResultScreen:
+                    Debug.Log("Do Nothing");
+                    break;
             }
 
             //Game End
-            if (turn != GameState.GameEnd && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
+            if (turn != GameState.ResultScreen && turn != GameState.GameEnd && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
             {
                 turn = GameState.GameEnd;
                 if (slots[7].MarbleAmount() > slots[15].MarbleAmount())
@@ -529,7 +535,7 @@ public class Game : MonoBehaviour {
             
             if (noGoSlots[0].Count - 1 >= 7 || noGoSlots[1].Count - 1 >= 7)
             {
-                SceneManager.LoadScene(mainMenuName);
+                ReturnToMainMenu();
             }
         } else
         {
@@ -827,5 +833,11 @@ public class Game : MonoBehaviour {
             //Color if same location
             slots[nextSlot[0]].GetComponent<SpriteRenderer>().sprite = sprP01;
         }
+    }
+
+    protected void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene(mainMenuName);
+        VideoAdManager.DestroyAd();
     }
 }

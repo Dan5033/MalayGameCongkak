@@ -34,4 +34,9 @@ public static class VideoAdManager {
             interstitial.Show();
         }
     }
+
+    public static void DestroyAd()
+    {
+        interstitial.Destroy();
+    }
 }
