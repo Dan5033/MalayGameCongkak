@@ -14,6 +14,10 @@ public class DifficultySelect : MonoBehaviour {
     [SerializeField] private string mainMenuName;
     [SerializeField] private string aiGameName;
 
+    [Header("Images")]
+    [SerializeField] private Image diffImage;
+    [SerializeField] private Sprite[] diffSprite;
+
     // Use this for initialization
     void Start ()
     {
@@ -26,14 +30,18 @@ public class DifficultySelect : MonoBehaviour {
         {
             case 0:
                 diffText.text = "Easy";
+                AIGame.difficulty = Difficulty.easy;
                 break;
             case 1:
                 diffText.text = "Medium";
+                AIGame.difficulty = Difficulty.medium;
                 break;
             case 2:
                 diffText.text = "Hard";
+                AIGame.difficulty = Difficulty.hard;
                 break;
         }
+        diffImage.sprite = diffSprite[(int) diffSlider.value];
     }
 
     public void StartGame()

@@ -6,12 +6,8 @@ public class Slot : MonoBehaviour {
 
     private List<GameObject> marbles = new List<GameObject>();
     [SerializeField] float speed = 20;
+    [SerializeField] SpriteRenderer sr;
     public int slotID = 0;
-
-
-    void Start () {
-		
-	}
 
 	void Update () {
 		foreach (GameObject i in marbles)
@@ -47,5 +43,15 @@ public class Slot : MonoBehaviour {
     {
         Game.instance.HoldMarbles(marbles,player);
         marbles = new List<GameObject>();
+    }
+
+    public void BurnSlot()
+    {
+        sr.color = new Color(0.5f, 0.5f, 0.5f);
+    }
+
+    public void UnBurnSlot()
+    {
+        sr.color = new Color(1, 1, 1);
     }
 }

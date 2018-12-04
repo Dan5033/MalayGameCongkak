@@ -146,7 +146,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 35.43, y: 10.63}
+    oldSize: {x: 40, y: 10.63}
     newSize: {x: 35.43, y: 10.63}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -207,13 +207,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 238054509}
-  m_LocalRotation: {x: -0, y: -0, z: 0.4068782, w: 0.91348237}
+  m_LocalRotation: {x: -0, y: -0, z: 0.404836, w: 0.9143893}
   m_LocalPosition: {x: -3.429, y: 2.231, z: 0}
-  m_LocalScale: {x: 0.3718, y: 0.23218238, z: 0.2}
+  m_LocalScale: {x: 0.3718, y: 0.25215006, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 48.018}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 47.762}
 --- !u!1 &339604896
 GameObject:
   m_ObjectHideFlags: 0
@@ -1557,6 +1557,51 @@ MonoBehaviour:
   m_EffectColor: {r: 0.24313727, g: 0.20784315, b: 0.1254902, a: 1}
   m_EffectDistance: {x: 3, y: -3}
   m_UseGraphicAlpha: 1
+--- !u!1 &1506313316
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1506313318}
+  - component: {fileID: 1506313317}
+  m_Layer: 5
+  m_Name: AdManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1506313317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1506313316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af2acc8e49536424b99832f305d9389a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &1506313318
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1506313316}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1569722805
 GameObject:
   m_ObjectHideFlags: 0
@@ -1664,8 +1709,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modeSelectName: ModeSelect
   diffSelectName: DifficultySelect
-  bannerPlacement: banner
-  testMode: 0
   marbles:
   - {fileID: 759698470}
   - {fileID: 775167470}

@@ -75,6 +75,28 @@ public class AI {
                     }
                 }
                 return most;
+            case Difficulty.hard:
+                int highestScore = marbleArray[7];
+                int highestSlot = -1;
+
+                for (int i = 8; i < 15; i++)
+                {
+                    int[] marbleWorld = marbleArray;
+                    int numMarble = marbleArray[i];
+                    int pointer = i;
+
+                    bool done = false;
+                    while (!done)
+                    {
+                        for (int count = 0; count < numMarble; count++)
+                        {
+
+                        }
+                    }
+
+
+                }
+                return -1;
             default:
                 return -1;
         }
