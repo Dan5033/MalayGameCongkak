@@ -13,7 +13,7 @@ public enum Difficulty
 
 public class AIGame : Game {
 
-    public static Difficulty difficulty = Difficulty.medium;
+    public static Difficulty difficulty = Difficulty.hard;
     private AI ai;
     private float aiThinking = 1;
     private float waitTime = 0;
@@ -23,15 +23,8 @@ public class AIGame : Game {
     new private void Start ()
     {
 
-        marblePerSlot = 7;
-        startStyle = StartStyle.together;
-        afterStyle = AfterStyle.StartTogether;
-        roundsToWin = 2;
-        burntVillages = true;
-        timePerTurn = 5;
-
         //Create AISystem
-        ai = new AI(difficulty);
+        ai = new AI(difficulty,noGoSlots[1]);
         aiThinking = ai.WaitTime();
         waitTime = ai.WaitTime();
 

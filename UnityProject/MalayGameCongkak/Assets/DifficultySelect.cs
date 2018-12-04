@@ -21,6 +21,13 @@ public class DifficultySelect : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
+        AIGame.marblePerSlot = 7;
+        AIGame.startStyle = StartStyle.together;
+        AIGame.afterStyle = AfterStyle.StartTogether;
+        AIGame.roundsToWin = 2;
+        AIGame.burntVillages = true;
+        AIGame.timePerTurn = 5;
+
         ChangeDifficulty();
 	}
 

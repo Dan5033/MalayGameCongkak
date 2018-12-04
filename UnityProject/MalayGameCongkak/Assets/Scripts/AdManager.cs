@@ -5,7 +5,7 @@ using GoogleMobileAds.Api;
 
 public class AdManager : MonoBehaviour {
 
-    private BannerView bannerView;
+    public static BannerView bannerView;
 
 	void Start ()
     {
@@ -40,18 +40,11 @@ public class AdManager : MonoBehaviour {
 
         // Create a 320x50 banner at the top of the screen.
         bannerView = new BannerView(adUnitId, AdSize.SmartBanner, AdPosition.Bottom);
-
-        bannerView.OnAdFailedToLoad += HandleOnAdFailedToLoad;
-
+        
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
 
         // Load the banner with the request.
         bannerView.LoadAd(request);
-    }
-
-    public void HandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
-    {
-        Debug.Log("Failed");
     }
 }

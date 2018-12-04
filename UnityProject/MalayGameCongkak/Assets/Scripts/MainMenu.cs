@@ -29,11 +29,13 @@ public class MainMenu : MonoBehaviour {
     public void GoToModeSelection()
     {
         SceneManager.LoadScene(modeSelectName);
+        AdManager.bannerView.Destroy();
     }
 
     public void GoToDifficultySelection()
     {
         SceneManager.LoadScene(diffSelectName);
+        AdManager.bannerView.Destroy();
     }
 
     public void CloseGame()
