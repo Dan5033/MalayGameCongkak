@@ -88,6 +88,8 @@ public class Game : MonoBehaviour {
 
 	protected void Start ()
     {
+        VideoAdManager.RequestInterstitial();
+
         //Singleton fucntion
         if (instance == null)
         {
@@ -349,6 +351,7 @@ public class Game : MonoBehaviour {
                     winner = 0;
                 }
                 winsText.text = wins[0] + "-" + wins[1];
+                VideoAdManager.ShowAd();
             }
         }
     }

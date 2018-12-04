@@ -1,24 +1,37 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GoogleMobileAds.Api;
 
-public class VideoAdManager : MonoBehaviour {
+public static class VideoAdManager {
 
-	void Start ()
+    public static InterstitialAd interstitial;
+
+    public static void RequestInterstitial()
     {
-
 #if UNITY_ANDROID
-        //string appId = "ca-app-pub-2580657966473956~6871886768";
-        string appId = "ca-app-pub-3940256099942544~3347511713";
+        string adUnitId = "ca-app-pub-3940256099942544/1033173712";
 #elif UNITY_IPHONE
-            string appId = "ca-app-pub-3940256099942544~1458002511";
+        string adUnitId = "ca-app-pub-3940256099942544/4411468910";
 #else
-            string appId = "unexpected_platform";
+        string adUnitId = "unexpected_platform";
 #endif
+
+        // Initialize an InterstitialAd.
+        interstitial = new InterstitialAd(adUnitId);
+
+        // Create an empty ad request.
+        AdRequest request = new AdRequest.Builder().Build();
+
+        // Load the interstitial with the request.
+        interstitial.LoadAd(request);
     }
 
-    void Update ()
+    public static void ShowAd()
     {
-		
-	}
+        if (interstitial.IsLoaded())
+        {
+            interstitial.Show();
+        }
+    }
 }
