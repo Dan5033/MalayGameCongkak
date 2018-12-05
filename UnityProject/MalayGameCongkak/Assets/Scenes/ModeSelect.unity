@@ -2164,6 +2164,7 @@ MonoBehaviour:
   timeSlider: {fileID: 931140564}
   gameSceneName: Game
   mainMenuSceneName: MainMenu
+  audioController: {fileID: 0}
 --- !u!1 &1795270549
 GameObject:
   m_ObjectHideFlags: 0

@@ -33,19 +33,23 @@ public class DifficultySelect : MonoBehaviour {
 
     public void ChangeDifficulty()
     {
+        AudioController.instance.PlaySoundEffect(Context.SliderChange);
         switch ((int) diffSlider.value)
         {
             case 0:
                 diffText.text = "Easy";
                 AIGame.difficulty = Difficulty.easy;
+                AIGame.timePerTurn = 0;
                 break;
             case 1:
                 diffText.text = "Medium";
                 AIGame.difficulty = Difficulty.medium;
+                AIGame.timePerTurn = 10;
                 break;
             case 2:
                 diffText.text = "Hard";
                 AIGame.difficulty = Difficulty.hard;
+                AIGame.timePerTurn = 5;
                 break;
         }
         diffImage.sprite = diffSprite[(int) diffSlider.value];
@@ -53,11 +57,13 @@ public class DifficultySelect : MonoBehaviour {
 
     public void StartGame()
     {
+        AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(aiGameName);
     }
 
     public void ReturnToTheMainManu()
     {
+        AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(mainMenuName);
     }
 }

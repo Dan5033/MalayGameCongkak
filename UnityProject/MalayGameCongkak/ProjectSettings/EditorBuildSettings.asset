@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AIGame.unity
     guid: 8d72f61d2e17bd04d89f9d3e26ddcb96
+  - enabled: 1
+    path: Assets/Scenes/Settings.unity
+    guid: 818b6265e2c37094f85d5d207bd70761
   m_configObjects: {}

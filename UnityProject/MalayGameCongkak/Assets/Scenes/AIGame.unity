@@ -481,6 +481,7 @@ MonoBehaviour:
   - {fileID: 1694468156}
   - {fileID: 1040320519}
   - {fileID: 616169381}
+  audioController: {fileID: 0}
   sprDef: {fileID: 21300000, guid: 4d2517cba6ea3304fb439da71e1ce372, type: 3}
   sprPlayer:
   - {fileID: 21300002, guid: 4d2517cba6ea3304fb439da71e1ce372, type: 3}
@@ -502,10 +503,6 @@ MonoBehaviour:
   fireAnimation: {fileID: 1757851395530720, guid: ece842d2775c3224aa41c88640356d5d,
     type: 2}
   endGameScreen: {fileID: 2018555781}
-  popSource: {fileID: 421636983}
-  pop: {fileID: 8300000, guid: 9f93718d94afca34f808ad60a3d3a451, type: 3}
-  take: {fileID: 8300000, guid: dcbbb54afc523ec4b96b451210a61bbf, type: 3}
-  money: {fileID: 8300000, guid: dd08cfcb18fb8194e91f41b8c892659e, type: 3}
   mainMenuName: MainMenu
   ffButton: {fileID: 2041895215}
 --- !u!4 &421636985

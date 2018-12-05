@@ -49,6 +49,7 @@ public class Game : MonoBehaviour {
 
     [Header("Preset Objects")]
     [SerializeField] protected Slot[] slots;
+    [SerializeField] protected AudioController audioController;
 
     [Header("Slot Sprites")]
     [SerializeField] protected Sprite sprDef;
@@ -78,13 +79,7 @@ public class Game : MonoBehaviour {
     [SerializeField] protected Image[] timeBar;
     [SerializeField] protected GameObject fireAnimation;
     [SerializeField] protected EndGameScreen endGameScreen;
-
-    [Header("Sounds")]
-    [SerializeField] protected AudioSource popSource;
-    [SerializeField] protected AudioClip pop;
-    [SerializeField] protected AudioClip take;
-    [SerializeField] protected AudioClip money;
-
+    
     [Header("Scenes")]
     [SerializeField] protected string mainMenuName;
 
@@ -183,12 +178,12 @@ public class Game : MonoBehaviour {
                             if (slot.slotID >= 0 && slot.slotID <= 6)
                             {
                                 nextSlot[0] = slot.slotID;
-                                popSource.PlayOneShot(pop);
+                                audioController.PlaySoundEffect(Context.MarblePlace);
                             }
                             else if (slot.slotID >= 8 && slot.slotID < 15)
                             {
                                 nextSlot[1] = slot.slotID;
-                                popSource.PlayOneShot(pop);
+                                audioController.PlaySoundEffect(Context.MarblePlace);
                             }
 
                             //If both player slected
@@ -676,7 +671,7 @@ public class Game : MonoBehaviour {
                         timeRemaining[player] = timePerTurn;
                     }
 
-                    popSource.PlayOneShot(take);
+                    audioController.PlaySoundEffect(Context.MarblePlace);
                 }
             }
             else if (nextSlot[player] > -1)
@@ -694,7 +689,7 @@ public class Game : MonoBehaviour {
                         timeRemaining[player] = timePerTurn;
                     }
 
-                    popSource.PlayOneShot(pop);
+                    audioController.PlaySoundEffect(Context.MarblePlace);
 
                     //Check if hand is empty
                     if (marblesHand[player].Count == 0)
@@ -723,7 +718,7 @@ public class Game : MonoBehaviour {
 
                             if (homeP1 || homeP0)
                             {
-                                popSource.PlayOneShot(money);
+                                audioController.PlaySoundEffect(Context.HouseBomb);
 
                                 slot.SurrenderMarbles(player);
                                 slots[14 - slot.slotID].SurrenderMarbles(player);

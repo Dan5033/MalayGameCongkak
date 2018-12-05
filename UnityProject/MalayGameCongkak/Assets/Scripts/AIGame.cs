@@ -106,7 +106,7 @@ public class AIGame : Game {
                             if (slot.slotID >= 0 && slot.slotID <= 6)
                             {
                                 nextSlot[0] = slot.slotID;
-                                popSource.PlayOneShot(pop);
+                                audioController.PlaySoundEffect(Context.MarblePlace);
                             }
 
                             //If both player slected

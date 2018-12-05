@@ -22,7 +22,7 @@ public class ModeSelect : MonoBehaviour {
 
     [SerializeField] private string gameSceneName;
     [SerializeField] private string mainMenuSceneName;
-
+    
     // Use this for initialization
     void Start () {
         ChangeMarbleNumber();
@@ -35,6 +35,7 @@ public class ModeSelect : MonoBehaviour {
 
     public void ChangeMarbleNumber()
     {
+        AudioController.instance.PlaySoundEffect(Context.SliderChange);
         Game.marblePerSlot = (int)marbleNumSlider.value;
         marbleNumText.text = Game.marblePerSlot.ToString();
         if (Game.marblePerSlot == 1)
@@ -48,6 +49,7 @@ public class ModeSelect : MonoBehaviour {
 
     public void ChangeStartStyle()
     {
+        AudioController.instance.PlaySoundEffect(Context.SliderChange);
         Game.startStyle = (StartStyle)startSlider.value;
         switch (Game.startStyle)
         {
@@ -65,6 +67,7 @@ public class ModeSelect : MonoBehaviour {
 
     public void ChangeAfterStyle()
     {
+        AudioController.instance.PlaySoundEffect(Context.SliderChange);
         Game.afterStyle = (AfterStyle)afterSlider.value;
         switch (Game.afterStyle)
         {
@@ -88,6 +91,7 @@ public class ModeSelect : MonoBehaviour {
 
     public void ChangeRoundToWin()
     {
+        AudioController.instance.PlaySoundEffect(Context.SliderChange);
         Game.roundsToWin = (int)roundSlider.value;
         if (Game.roundsToWin == 0)
         {
@@ -103,6 +107,7 @@ public class ModeSelect : MonoBehaviour {
 
     public void ChangeBurningRule()
     {
+        AudioController.instance.PlaySoundEffect(Context.SliderChange);
         if (burnSlider.value == 0)
         {
             Game.burntVillages = false;
@@ -116,6 +121,7 @@ public class ModeSelect : MonoBehaviour {
 
     public void ChangeTimePerTurn()
     {
+        AudioController.instance.PlaySoundEffect(Context.SliderChange);
         Game.timePerTurn = timeSlider.value;
         if (Game.timePerTurn == 0)
         {
@@ -131,11 +137,13 @@ public class ModeSelect : MonoBehaviour {
 
     public void Startgame()
     {
+        AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(gameSceneName);
     }
 
     public void ReturnToMainMenu()
     {
+        AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(mainMenuSceneName);
     }
 }
