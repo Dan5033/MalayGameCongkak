@@ -11,8 +11,8 @@ public class TutorialGame : AIGame {
 
     [Header("Text System")]
     private bool skip = false;
-    [SerializeField] private GameObject textBox;
-    [SerializeField] private GameObject textPotrait;
+    [SerializeField] private RectTransform textBox;
+    [SerializeField] private RectTransform textPotrait;
     [SerializeField] private Text text;
 
     [SerializeField] private SpriteRenderer blackScreen;
@@ -50,12 +50,12 @@ public class TutorialGame : AIGame {
         ffButton.interactable = false;
 
         //get destination postion
-        potraitDest = textPotrait.transform.position;
-        boxDest = textBox.transform.position;
+        potraitDest = textPotrait.anchoredPosition;
+        boxDest = textBox.anchoredPosition;
 
         //Send text objects out screen
-        textPotrait.transform.position = potraitDest + new Vector3(0, 10000, 0);
-        textBox.transform.position = boxDest + new Vector3(0, 10000, 0);
+        textPotrait.anchoredPosition = potraitDest + new Vector3(0, 10000, 0);
+        textBox.anchoredPosition = boxDest + new Vector3(0, 10000, 0);
 
         nextSlot = new int[] { -2, -2 };
         UpdateSlotSprite();
@@ -467,6 +467,8 @@ public class TutorialGame : AIGame {
                     sequence++;
                     break;
                 case 20:
+                    SaveData.currentSave.tutorialCompleted = true;
+                    SaveData.SaveGame();
                     SceneManager.LoadScene("Mode1P");
                     break;
             }
@@ -493,8 +495,8 @@ public class TutorialGame : AIGame {
         //Move graphics into position
         if (skip)
         {
-            textPotrait.transform.position = potraitDest;
-            textBox.transform.position = boxDest;
+            textPotrait.anchoredPosition = potraitDest;
+            textBox.anchoredPosition = boxDest;
             skip = false;
         } else
         {
@@ -537,11 +539,11 @@ public class TutorialGame : AIGame {
         textShown = false;
     }
 
-    IEnumerator ObjectEnter(GameObject item, Vector3 dest)
+    IEnumerator ObjectEnter(RectTransform item, Vector3 dest)
     {
-        while (Vector3.Distance(item.transform.position,dest) > 100)
+        while (Vector3.Distance(item.anchoredPosition,dest) > 10)
         {
-            item.transform.position = Vector3.Lerp(item.transform.position, dest,0.1f);
+            item.anchoredPosition = Vector3.Lerp(item.anchoredPosition, dest,0.1f);
             yield return null;
         }
     }

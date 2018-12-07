@@ -798,7 +798,13 @@ public class Game : MonoBehaviour {
         bool p2Overlap = nextSlot[1] == -1 && nextSlot[1] >= 8 && nextSlot[1] <= 14;
         if (sameLocation || p1Overlap || p2Overlap)
         {
-            slots[nextSlot[0]].GetComponent<SpriteRenderer>().sprite = sprP01;
+            if (nextSlot[0] != -1)
+            {
+                slots[nextSlot[0]].GetComponent<SpriteRenderer>().sprite = sprP01;
+            } else
+            {
+                slots[nextSlot[1]].GetComponent<SpriteRenderer>().sprite = sprP01;
+            }
         }
     }
 

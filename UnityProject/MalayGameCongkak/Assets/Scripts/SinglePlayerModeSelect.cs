@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class SinglePlayerModeSelect : MonoBehaviour {
 
     [SerializeField] Button btVersus;
+    [SerializeField] Text textVersus;
     [SerializeField] Button btFreePlay;
 
     [SerializeField] GameObject tutorialBadge;
@@ -17,14 +18,17 @@ public class SinglePlayerModeSelect : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (SaveData.currentSave.tutorialCompleted)
-        {
-            TutorialComplete();
-        }
-
         if (SaveData.currentSave.tutorialBadgeShown)
         {
+            tutorialBadge.SetActive(true);
             btVersus.interactable = true;
+            textVersus.text = "Versus";
+        } else
+        {
+            if (SaveData.currentSave.tutorialCompleted)
+            {
+                TutorialComplete();
+            }
         }
 	}
 
@@ -36,13 +40,16 @@ public class SinglePlayerModeSelect : MonoBehaviour {
 
     void TutorialComplete()
     {
+        tutorialBadge.SetActive(true);
         tutorialBadge.transform.position = tutorialBadgeDest + new Vector3(10000, 0, 0);
         StartCoroutine(MoveObject(tutorialBadge, tutorialBadgeDest));
+        SaveData.currentSave.tutorialBadgeShown = true;
+        SaveData.SaveGame();
     }
 
     IEnumerator MoveObject(GameObject gameObject, Vector3 dest)
     {
-        while (Vector3.Distance(gameObject.transform.position,dest) > 100)
+        while (Vector3.Distance(gameObject.transform.position,dest) > 10)
         {
             gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, dest, 0.1f);
             yield return null;
