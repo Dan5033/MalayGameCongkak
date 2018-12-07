@@ -14,13 +14,13 @@ public enum Difficulty
 public class AIGame : Game {
 
     public static Difficulty difficulty = Difficulty.medium;
-    private AI ai;
-    private float aiThinking = 1;
-    private float waitTime = 0;
+    protected AI ai;
+    protected float aiThinking = 1;
+    protected float waitTime = 0;
 
-    [SerializeField] Button ffButton;
+    [SerializeField] protected Button ffButton;
 
-    new private void Start ()
+    new protected void Start ()
     {
 
         //Create AISystem
@@ -31,7 +31,6 @@ public class AIGame : Game {
         base.Start();
     }
 	
-	// Update is called once per frame
 	void Update ()
     {
         //Move Marbles in hand into a line
@@ -106,7 +105,7 @@ public class AIGame : Game {
                             if (slot.slotID >= 0 && slot.slotID <= 6)
                             {
                                 nextSlot[0] = slot.slotID;
-                                audioController.PlaySoundEffect(Context.MarblePlace);
+                                AudioController.instance.PlaySoundEffect(Context.MarblePlace);
                             }
 
                             //If both player slected
@@ -280,6 +279,99 @@ public class AIGame : Game {
         if (ffButton.interactable)
         {
             waitTime = 0.1f;
+            if (aiThinking > waitTime)
+            {
+                aiThinking = waitTime;
+            }
+        }
+    }
+
+    protected override void InstructionDisplay()
+    {
+        switch (turn)
+        {
+            case GameState.PickingStartSlot:
+                texts[0].GetComponent<Text>().text = "Choose Starting House";
+                break;
+            case GameState.BothTurns:
+                texts[0].GetComponent<Text>().text = "Go!";
+                break;
+            case GameState.P1Turn:
+                texts[0].GetComponent<Text>().text = "Your Turn";
+                break;
+            case GameState.P2Turn:
+                texts[0].GetComponent<Text>().text = "";
+                break;
+            case GameState.GameEnd:
+                int am1 = slots[15].GetComponent<Slot>().MarbleAmount();
+                int am2 = slots[7].GetComponent<Slot>().MarbleAmount();
+                if (am1 > am2)
+                {
+                    texts[0].GetComponent<Text>().text = "You Win";
+                }
+                else if (am2 > am1)
+                {
+                    texts[0].GetComponent<Text>().text = "You Lose";
+                }
+                else
+                {
+                    texts[0].GetComponent<Text>().text = "Draw";
+                }
+                break;
+            case GameState.Paused:
+                texts[0].GetComponent<Text>().text = "Paused";
+                break;
+        }
+    }
+
+    protected override void UISetup()
+    {
+        if (roundsToWin > 1)
+        {
+            winsText.enabled = true;
+        }
+        else
+        {
+            winsText.enabled = false;
+        }
+
+        if (timePerTurn > 0)
+        {
+            timeBar[0].enabled = true;
+        }
+        else
+        {
+            timeBar[0].enabled = false;
+        }
+
+        UpdateSlotSprite();
+    }
+
+    protected override void ProgressTime()
+    {
+        if (timePerTurn > 0)
+        {
+            switch (turn)
+            {
+                case GameState.BothTurns:
+                    timeRemaining[0] = Mathf.Max(timeRemaining[0] - Time.deltaTime, 0);
+                    if (timeRemaining[0] <= 0)
+                    {
+                        turnDone[0] = true;
+                        nextSlot[0] = -2;
+                    }
+                    break;
+                case GameState.P1Turn:
+                    timeRemaining[0] -= Time.deltaTime;
+                    if (timeRemaining[0] <= 0)
+                    {
+                        turnDone[0] = true;
+                        nextSlot[0] = -2;
+                    }
+                    break;
+            }
+
+            timeBar[0].transform.localScale = new Vector3(timeRemaining[0] / timePerTurn, 1, 1);
         }
     }
 

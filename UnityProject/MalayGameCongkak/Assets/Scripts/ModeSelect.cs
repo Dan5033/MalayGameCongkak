@@ -25,17 +25,20 @@ public class ModeSelect : MonoBehaviour {
     
     // Use this for initialization
     void Start () {
-        ChangeMarbleNumber();
-        ChangeStartStyle();
-        ChangeAfterStyle();
-        ChangeRoundToWin();
-        ChangeBurningRule();
-        ChangeTimePerTurn();
+        ChangeMarbleNumber(false);
+        ChangeStartStyle(false);
+        ChangeAfterStyle(false);
+        ChangeRoundToWin(false);
+        ChangeBurningRule(false);
+        ChangeTimePerTurn(false);
 	}
 
-    public void ChangeMarbleNumber()
+    public void ChangeMarbleNumber(bool sound = true)
     {
-        AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        if (sound)
+        {
+            AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        }
         Game.marblePerSlot = (int)marbleNumSlider.value;
         marbleNumText.text = Game.marblePerSlot.ToString();
         if (Game.marblePerSlot == 1)
@@ -47,9 +50,12 @@ public class ModeSelect : MonoBehaviour {
         }
     }
 
-    public void ChangeStartStyle()
+    public void ChangeStartStyle(bool sound = true)
     {
-        AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        if (sound)
+        {
+            AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        }
         Game.startStyle = (StartStyle)startSlider.value;
         switch (Game.startStyle)
         {
@@ -65,9 +71,12 @@ public class ModeSelect : MonoBehaviour {
         }
     }
 
-    public void ChangeAfterStyle()
+    public void ChangeAfterStyle(bool sound = true)
     {
-        AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        if (sound)
+        {
+            AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        }
         Game.afterStyle = (AfterStyle)afterSlider.value;
         switch (Game.afterStyle)
         {
@@ -89,9 +98,12 @@ public class ModeSelect : MonoBehaviour {
         }
     }
 
-    public void ChangeRoundToWin()
+    public void ChangeRoundToWin(bool sound = true)
     {
-        AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        if (sound)
+        {
+            AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        }
         Game.roundsToWin = (int)roundSlider.value;
         if (Game.roundsToWin == 0)
         {
@@ -105,9 +117,12 @@ public class ModeSelect : MonoBehaviour {
         }
     }
 
-    public void ChangeBurningRule()
+    public void ChangeBurningRule(bool sound = true)
     {
-        AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        if (sound)
+        {
+            AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        }
         if (burnSlider.value == 0)
         {
             Game.burntVillages = false;
@@ -119,9 +134,12 @@ public class ModeSelect : MonoBehaviour {
         }
     }
 
-    public void ChangeTimePerTurn()
+    public void ChangeTimePerTurn(bool sound = true)
     {
-        AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        if (sound)
+        {
+            AudioController.instance.PlaySoundEffect(Context.SliderChange);
+        }
         Game.timePerTurn = timeSlider.value;
         if (Game.timePerTurn == 0)
         {

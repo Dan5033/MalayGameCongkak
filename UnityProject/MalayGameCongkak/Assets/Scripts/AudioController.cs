@@ -26,12 +26,11 @@ public class AudioController : MonoBehaviour {
     [SerializeField] protected AudioClip acTake;
     [SerializeField] protected AudioClip acMoney;
     [SerializeField] protected AudioClip acClick;
+    [SerializeField] protected AudioClip acMarble;
 
     [Header("Static")]
     public static float BGMVol = 1;
     public static float SFXVol = 1;
-    public const string bgmString = "BGMVolume";
-    public const string sfxString = "SFXVolume";
 
     void Start ()
     {
@@ -41,8 +40,8 @@ public class AudioController : MonoBehaviour {
         if (instance == null)
         {
             instance = this;
-            BGMVol = PlayerPrefs.GetFloat(bgmString,0.5f);
-            SFXVol = PlayerPrefs.GetFloat(sfxString,1);
+            BGMVol = SaveData.currentSave.BGMVol;
+            SFXVol = SaveData.currentSave.SFXVol;
             ResetVolume();
         } else if (instance != this)
         {
@@ -74,7 +73,7 @@ public class AudioController : MonoBehaviour {
     {
         switch (context) {
             case Context.ButtonPress:
-                PlaySoundEffect(acClick, 0);
+                PlaySoundEffect(acClick, 0.1f);
                 break;
             case Context.HousePickup:
                 PlaySoundEffect(acTake, 0.2f);
@@ -83,7 +82,7 @@ public class AudioController : MonoBehaviour {
                 PlaySoundEffect(acMoney, 0);
                 break;
             case Context.MarblePlace:
-                PlaySoundEffect(acPop, 0.2f);
+                PlaySoundEffect(acPop, 0.1f);
                 break;
             case Context.SliderChange:
                 PlaySoundEffect(acClick, 0.2f);

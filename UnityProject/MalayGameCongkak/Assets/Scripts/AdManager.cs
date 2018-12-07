@@ -3,37 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using GoogleMobileAds.Api;
 
-public class AdManager : MonoBehaviour {
+public static class AdManager {
 
     public static BannerView bannerView;
+    public static InterstitialAd interstitial;
 
-	void Start ()
+	public static void InitializeAdMob ()
     {
 #if UNITY_ANDROID
-        //string appId = "ca-app-pub-2580657966473956~6871886768";
-        string appId = "ca-app-pub-3940256099942544~3347511713";
-#elif UNITY_IPHONE
-            string appId = "ca-app-pub-3940256099942544~1458002511";
+        string appId = "ca-app-pub-2580657966473956~6871886768";
 #else
             string appId = "unexpected_platform";
 #endif
 
         // Initialize the Google Mobile Ads SDK.
         MobileAds.Initialize(appId);
-
-        this.RequestBanner();
     }
-	
-	void Update () {
-		
-	}
 
-    private void RequestBanner()
+    public static void RequestBanner()
     {
 #if UNITY_ANDROID
-        string adUnitId = "ca-app-pub-3940256099942544/6300978111";
-#elif UNITY_IPHONE
-            string adUnitId = "ca-app-pub-3940256099942544/2934735716";
+        string adUnitId = "ca-app-pub-2580657966473956/3602849309";
 #else
             string adUnitId = "unexpected_platform";
 #endif
@@ -46,5 +36,41 @@ public class AdManager : MonoBehaviour {
 
         // Load the banner with the request.
         bannerView.LoadAd(request);
+    }
+
+    public static void DestroyBanner()
+    {
+        bannerView.Destroy();
+    }
+
+    public static void RequestInterstitial()
+    {
+#if UNITY_ANDROID
+        string adUnitId = "ca-app-pub-2580657966473956/3702785606";
+#else
+        string adUnitId = "unexpected_platform";
+#endif
+
+        // Initialize an InterstitialAd.
+        interstitial = new InterstitialAd(adUnitId);
+
+        // Create an empty ad request.
+        AdRequest request = new AdRequest.Builder().Build();
+
+        // Load the interstitial with the request.
+        interstitial.LoadAd(request);
+    }
+
+    public static void ShowInterstitial()
+    {
+        if (interstitial.IsLoaded())
+        {
+            interstitial.Show();
+        }
+    }
+
+    public static void DestroyInsterstitial()
+    {
+        interstitial.Destroy();
     }
 }

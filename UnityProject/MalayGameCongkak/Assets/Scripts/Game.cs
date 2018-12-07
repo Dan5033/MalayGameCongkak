@@ -49,7 +49,6 @@ public class Game : MonoBehaviour {
 
     [Header("Preset Objects")]
     [SerializeField] protected Slot[] slots;
-    [SerializeField] protected AudioController audioController;
 
     [Header("Slot Sprites")]
     [SerializeField] protected Sprite sprDef;
@@ -79,13 +78,10 @@ public class Game : MonoBehaviour {
     [SerializeField] protected Image[] timeBar;
     [SerializeField] protected GameObject fireAnimation;
     [SerializeField] protected EndGameScreen endGameScreen;
-    
-    [Header("Scenes")]
-    [SerializeField] protected string mainMenuName;
 
 	protected void Start ()
     {
-        VideoAdManager.RequestInterstitial();
+        AdManager.RequestInterstitial();
 
         //Singleton fucntion
         if (instance == null)
@@ -113,27 +109,8 @@ public class Game : MonoBehaviour {
         //Start Style
         SetupTurn((int) startStyle);
 
-
         //Game Mode UI
-        if (roundsToWin > 1)
-        {
-            winsText.enabled = true;
-        } else
-        {
-            winsText.enabled = false;
-        }
-
-        if (timePerTurn > 0)
-        {
-            timeBar[0].enabled = true;
-            timeBar[1].enabled = true;
-        } else
-        {
-            timeBar[0].enabled = false;
-            timeBar[1].enabled = false;
-        }
-
-        UpdateSlotSprite();
+        UISetup();
     }
 	
 	void Update ()
@@ -178,12 +155,12 @@ public class Game : MonoBehaviour {
                             if (slot.slotID >= 0 && slot.slotID <= 6)
                             {
                                 nextSlot[0] = slot.slotID;
-                                audioController.PlaySoundEffect(Context.MarblePlace);
+                                AudioController.instance.PlaySoundEffect(Context.MarblePlace);
                             }
                             else if (slot.slotID >= 8 && slot.slotID < 15)
                             {
                                 nextSlot[1] = slot.slotID;
-                                audioController.PlaySoundEffect(Context.MarblePlace);
+                                AudioController.instance.PlaySoundEffect(Context.MarblePlace);
                             }
 
                             //If both player slected
@@ -219,29 +196,23 @@ public class Game : MonoBehaviour {
                         if (turnDone[0])
                         {
                             doneFirst = 0;
+                            ForfeitHand(0);
                         }
                         else if (turnDone[1])
                         {
                             doneFirst = 1;
+                            ForfeitHand(1);
                         }
                     }
 
                     //If time is up, surrender all marble in hand to the opponent
                     if (turnDone[0])
                     {
-                        if (marblesHand[0].Count > 0)
-                        {
-                            slots[7].StoreMarbles(marblesHand[0]);
-                            marblesHand[0] = new List<GameObject>();
-                        }
+                        ForfeitHand(0);
                     }
                     else if (turnDone[1])
                     {
-                        if (marblesHand[1].Count > 0)
-                        {
-                            slots[15].StoreMarbles(marblesHand[1]);
-                            marblesHand[1] = new List<GameObject>();
-                        }
+                        ForfeitHand(1);
                     }
 
                     //Setup Next Turn
@@ -349,18 +320,18 @@ public class Game : MonoBehaviour {
                     winner = 0;
                 }
                 winsText.text = wins[0] + "-" + wins[1];
-                VideoAdManager.ShowAd();
+                AdManager.ShowInterstitial();
             }
         }
     }
 
-    protected void InstructionDisplay()
+    protected virtual void InstructionDisplay()
     {
         switch (turn)
         {
             case GameState.PickingStartSlot:
-                texts[0].GetComponent<Text>().text = "Choose Starting Village";
-                texts[1].GetComponent<Text>().text = "Choose Starting Village";
+                texts[0].GetComponent<Text>().text = "Choose Starting House";
+                texts[1].GetComponent<Text>().text = "Choose Starting House";
                 break;
             case GameState.BothTurns:
                 texts[0].GetComponent<Text>().text = "Go!";
@@ -417,7 +388,7 @@ public class Game : MonoBehaviour {
         }
     }
 
-    protected void ProgressTime()
+    protected virtual void ProgressTime()
     {
         if (timePerTurn > 0)
         {
@@ -671,7 +642,7 @@ public class Game : MonoBehaviour {
                         timeRemaining[player] = timePerTurn;
                     }
 
-                    audioController.PlaySoundEffect(Context.MarblePlace);
+                    AudioController.instance.PlaySoundEffect(Context.MarblePlace);
                 }
             }
             else if (nextSlot[player] > -1)
@@ -689,7 +660,7 @@ public class Game : MonoBehaviour {
                         timeRemaining[player] = timePerTurn;
                     }
 
-                    audioController.PlaySoundEffect(Context.MarblePlace);
+                    AudioController.instance.PlaySoundEffect(Context.MarblePlace);
 
                     //Check if hand is empty
                     if (marblesHand[player].Count == 0)
@@ -718,7 +689,7 @@ public class Game : MonoBehaviour {
 
                             if (homeP1 || homeP0)
                             {
-                                audioController.PlaySoundEffect(Context.HouseBomb);
+                                AudioController.instance.PlaySoundEffect(Context.HouseBomb);
 
                                 slot.SurrenderMarbles(player);
                                 slots[14 - slot.slotID].SurrenderMarbles(player);
@@ -820,16 +791,66 @@ public class Game : MonoBehaviour {
                 slots[nextSlot[i]].GetComponent<SpriteRenderer>().sprite = sprPlayer[i];
             }
         }
-        if (nextSlot[0] == nextSlot[1] && nextSlot[0] > -1)
+
+        //Color if same location
+        bool sameLocation = nextSlot[0] == nextSlot[1] && nextSlot[0] > -1 && nextSlot[1] > -1;
+        bool p1Overlap = nextSlot[0] == -1 && nextSlot[1] >= 0 && nextSlot[1] <= 6;
+        bool p2Overlap = nextSlot[1] == -1 && nextSlot[1] >= 8 && nextSlot[1] <= 14;
+        if (sameLocation || p1Overlap || p2Overlap)
         {
-            //Color if same location
             slots[nextSlot[0]].GetComponent<SpriteRenderer>().sprite = sprP01;
         }
     }
 
     protected void ReturnToMainMenu()
     {
-        SceneManager.LoadScene(mainMenuName);
-        VideoAdManager.DestroyAd();
+        SceneManager.LoadScene("MainMenu");
+        AdManager.DestroyInsterstitial();
+    }
+
+    protected void ForfeitHand(int player)
+    {
+        switch (player)
+        {
+            case 0:
+                if (marblesHand[0].Count > 0)
+                {
+                    slots[7].StoreMarbles(marblesHand[0]);
+                    marblesHand[0] = new List<GameObject>();
+                }
+                break;
+            case 1:
+                if (marblesHand[1].Count > 0)
+                {
+                    slots[15].StoreMarbles(marblesHand[1]);
+                    marblesHand[1] = new List<GameObject>();
+                }
+                break;
+        }
+    }
+
+    protected virtual void UISetup()
+    {
+        if (roundsToWin > 1)
+        {
+            winsText.enabled = true;
+        }
+        else
+        {
+            winsText.enabled = false;
+        }
+
+        if (timePerTurn > 0)
+        {
+            timeBar[0].enabled = true;
+            timeBar[1].enabled = true;
+        }
+        else
+        {
+            timeBar[0].enabled = false;
+            timeBar[1].enabled = false;
+        }
+
+        UpdateSlotSprite();
     }
 }

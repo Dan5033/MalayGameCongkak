@@ -9,8 +9,16 @@ public class PauseMenu : MonoBehaviour {
     private GameState lastState;
     [SerializeField] private string mainMenuSceneName;
 
-    public void PauseGame()
+    public void PauseGame(int player)
     {
+        if (player == 0)
+        {
+            pauseCanvas.transform.eulerAngles = new Vector3(0, 0, 0);
+        } else if (player == 1)
+        {
+            pauseCanvas.transform.eulerAngles = new Vector3(0, 0, 180);
+        }
+
         lastState = Game.instance.turn;
         Game.instance.turn = GameState.Paused;
 
@@ -27,12 +35,12 @@ public class PauseMenu : MonoBehaviour {
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        VideoAdManager.DestroyAd();
+        AdManager.DestroyBanner();
     }
 
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene(mainMenuSceneName);
-        VideoAdManager.DestroyAd();
+        AdManager.DestroyBanner();
     }
 }

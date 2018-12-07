@@ -28,13 +28,13 @@ public class EndGameScreen : MonoBehaviour {
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene(mainMenuName);
-        VideoAdManager.DestroyAd();
+        AdManager.DestroyInsterstitial();
     }
 
     public void Rematch()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        VideoAdManager.DestroyAd();
+        AdManager.DestroyInsterstitial();
     }
 
     public void EnableCanvas(bool ai)

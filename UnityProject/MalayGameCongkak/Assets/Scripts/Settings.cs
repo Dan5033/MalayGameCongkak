@@ -26,6 +26,9 @@ public class Settings : MonoBehaviour {
         bgmText.text = "BGM: " + Mathf.RoundToInt(bgmSlider.value);
         AudioController.instance.PlaySoundEffect(Context.SliderChange);
         AudioController.instance.ResetVolume();
+
+        //Save
+        SaveData.currentSave.BGMVol = AudioController.BGMVol;
     }
 
     public void ChangeSFX()
@@ -34,13 +37,14 @@ public class Settings : MonoBehaviour {
         sfxText.text = "SFX: " + Mathf.RoundToInt(sfxSlider.value);
         AudioController.instance.PlaySoundEffect(Context.SliderChange);
         AudioController.instance.ResetVolume();
+
+        //Save
+        SaveData.currentSave.SFXVol = AudioController.SFXVol;
     }
 
     public void ReturnToMainMenu()
     {
-        PlayerPrefs.SetFloat(AudioController.bgmString, AudioController.BGMVol);
-        PlayerPrefs.SetFloat(AudioController.sfxString, AudioController.SFXVol);
-        PlayerPrefs.Save();
+        SaveData.SaveGame();
         AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(mainMenuName);
     }
