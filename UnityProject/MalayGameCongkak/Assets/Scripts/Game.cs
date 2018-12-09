@@ -79,6 +79,7 @@ public class Game : MonoBehaviour {
     [SerializeField] protected GameObject fireAnimation;
     [SerializeField] protected EndGameScreen endGameScreen;
     [SerializeField] protected Sprite[] masterPix;
+    [SerializeField] protected SlotNumberDisplay snd;
 
     protected void Start ()
     {
@@ -808,6 +809,20 @@ public class Game : MonoBehaviour {
                 slots[nextSlot[1]].GetComponent<SpriteRenderer>().sprite = sprP01;
             }
         }
+
+
+        float angle = 0;
+        switch (turn)
+        {
+            case GameState.P1Turn:
+                angle = -90;
+                break;
+            case GameState.P2Turn:
+                angle = 90;
+                break;
+                
+        }
+        snd.ResetNumbers(slots,angle);
     }
 
     protected void ReturnToMainMenu()
@@ -875,7 +890,8 @@ public class Game : MonoBehaviour {
             "Remember you can practice against a master with custom rules by going to Free Play",
             "Defeat masters to unlock more options in Free Play and in Two Players Modes.",
             "Congkak is a traditional game played since the age of the Malacca Sulatanate.",
-            "Congkak is one of the few traditional games still played my kids in South East Asian coutnries."
+            "Congkak is one of the few traditional games still played my kids in South East Asian coutnries.",
+            "Did you know, if you launch the game on certain days, you will get a prize!"
         };
 
         return tips[Mathf.RoundToInt(Random.value * (tips.Length - 1))];

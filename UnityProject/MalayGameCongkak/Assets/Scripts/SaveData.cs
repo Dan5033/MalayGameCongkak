@@ -12,9 +12,10 @@ public class SaveData {
     const string folderName = "SaveFiles";
     const string fileExtension = ".sav";
 
-    //Volumes
+    //Settings
     public float BGMVol = 1;
     public float SFXVol = 1;
+    public int displayType = 0;
 
     //Tutorial
     public bool tutorialCompleted = false;
@@ -24,8 +25,13 @@ public class SaveData {
     public bool[] defeated = new bool[7];
     public bool[] defeatAnimation = new bool[7];
 
+    //Unlocks
+    public bool[] marbleUnlocked = new bool[(int)MarbleDesign.Golden + 1];
+    public MarbleDesign selectedDesign = MarbleDesign.Basic;
+
     public SaveData()
     {
+        marbleUnlocked[0] = true;
     }
 
     public static void SaveGame()
@@ -74,6 +80,21 @@ public class SaveData {
         {
             currentSave = new SaveData();
             SaveGame();
+        }
+
+        currentSave.CheckSaveData();
+    }
+
+    private void CheckSaveData()
+    {
+        if (defeated == null)
+        {
+            defeated = new bool[7];
+        }
+
+        if (marbleUnlocked == null)
+        {
+            marbleUnlocked = new bool[(int)MarbleDesign.Golden + 1];
         }
     }
 }

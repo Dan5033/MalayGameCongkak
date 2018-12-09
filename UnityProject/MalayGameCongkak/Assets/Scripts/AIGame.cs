@@ -18,6 +18,7 @@ public class AIGame : Game {
     protected AI ai;
     protected float aiThinking = 1;
     protected float waitTime = 0;
+    protected float mood = 0;
 
     [Header("Chatter")]
     [SerializeField] private Image box;
@@ -86,6 +87,7 @@ public class AIGame : Game {
                         {
                             ai.UpdateWorld(slots);
                             nextSlot[1] = ai.NextMove();
+                            mood = mood - Mathf.Sign(mood);
                         }
                         break;
                     case GameState.BothTurns:
@@ -115,15 +117,14 @@ public class AIGame : Game {
             }
 
             //Quotes
-            if (Random.value > 0.01f)
+            if (slots[15].MarbleAmount() - slots[7].MarbleAmount() > 20 && mood >= 0)
             {
-                if (slots[15].MarbleAmount() - slots[7].MarbleAmount() > 20)
-                {
-                    runningText = StartCoroutine(TextBoxDisplay(GenerateQuote(master, Situation.Losing), 0.01f));
-                } else if (slots[15].MarbleAmount() - slots[7].MarbleAmount() < -20)
-                {
-                    runningText = StartCoroutine(TextBoxDisplay(GenerateQuote(master, Situation.Winning), 0.01f));
-                }
+                mood = -10;
+                runningText = StartCoroutine(TextBoxDisplay(GenerateQuote(master, Situation.Losing), 0.01f));
+            } else if (slots[15].MarbleAmount() - slots[7].MarbleAmount() < -20 && mood <= 0)
+            {
+                mood = 10;
+                runningText = StartCoroutine(TextBoxDisplay(GenerateQuote(master, Situation.Winning), 0.01f));
             }
 
             //Player's Turn
@@ -178,7 +179,6 @@ public class AIGame : Game {
                         {
                             //First Turn
                             PlayerTurn(0, slot);
-                            PlayerTurn(1, slot);
                         }
                     }
 

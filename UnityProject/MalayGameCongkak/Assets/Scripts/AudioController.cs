@@ -28,10 +28,6 @@ public class AudioController : MonoBehaviour {
     [SerializeField] protected AudioClip acClick;
     [SerializeField] protected AudioClip acMarble;
 
-    [Header("Static")]
-    public static float BGMVol = 1;
-    public static float SFXVol = 1;
-
     void Start ()
     {
         DontDestroyOnLoad(this);
@@ -40,8 +36,6 @@ public class AudioController : MonoBehaviour {
         if (instance == null)
         {
             instance = this;
-            BGMVol = SaveData.currentSave.BGMVol;
-            SFXVol = SaveData.currentSave.SFXVol;
             ResetVolume();
         } else if (instance != this)
         {
@@ -92,7 +86,7 @@ public class AudioController : MonoBehaviour {
 
     public void ResetVolume()
     {
-        asBGM.volume = BGMVol;
-        asSFX.volume = SFXVol;
+        asBGM.volume = SaveData.currentSave.BGMVol;
+        asSFX.volume = SaveData.currentSave.SFXVol;
     }
 }

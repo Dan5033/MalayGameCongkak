@@ -1758,6 +1758,7 @@ MonoBehaviour:
   - {fileID: 661279393}
   - {fileID: 665099136}
   settings: {fileID: 1636093315}
+  prefab: {fileID: 1917808030509556, guid: 0f83f677555e2474192b292d1eea32ee, type: 2}
 --- !u!114 &1646616615
 MonoBehaviour:
   m_ObjectHideFlags: 0
