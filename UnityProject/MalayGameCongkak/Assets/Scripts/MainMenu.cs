@@ -33,6 +33,49 @@ public class MainMenu : MonoBehaviour {
     private void Update()
     {
         settings.transform.Rotate(new Vector3(0, 0, 1));
+
+#if UNITY_EDITOR
+        if (Input.GetKey(KeyCode.KeypadEnter))
+        {
+            SaveData.currentSave.tutorialCompleted = !SaveData.currentSave.tutorialCompleted;
+            Debug.Log("Tutorial Completed: " + SaveData.currentSave.tutorialCompleted);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            SaveData.currentSave.defeated[0] = !SaveData.currentSave.defeated[0];
+            Debug.Log("Master 0 defeated: " + SaveData.currentSave.defeated[0]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            SaveData.currentSave.defeated[1] = !SaveData.currentSave.defeated[1];
+            Debug.Log("Master 1 defeated: " + SaveData.currentSave.defeated[1]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SaveData.currentSave.defeated[2] = !SaveData.currentSave.defeated[2];
+            Debug.Log("Master 2 defeated: " + SaveData.currentSave.defeated[2]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SaveData.currentSave.defeated[3] = !SaveData.currentSave.defeated[3];
+            Debug.Log("Master 3 defeated: " + SaveData.currentSave.defeated[3]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            SaveData.currentSave.defeated[4] = !SaveData.currentSave.defeated[4];
+            Debug.Log("Master 4 defeated: " + SaveData.currentSave.defeated[4]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            SaveData.currentSave.defeated[5] = !SaveData.currentSave.defeated[5];
+            Debug.Log("Master 5 defeated: " + SaveData.currentSave.defeated[5]);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            SaveData.currentSave.defeated[6] = !SaveData.currentSave.defeated[6];
+            Debug.Log("Master 6 defeated: " + SaveData.currentSave.defeated[6]);
+        }
+#endif
     }
 
     public void CloseGame()

@@ -7,30 +7,55 @@ using UnityEngine.SceneManagement;
 public class ModeSelect : MonoBehaviour {
 
     [Header("UI Elements")]
-    [SerializeField] private Text marbleNumText;
-    [SerializeField] private Slider marbleNumSlider;
-    [SerializeField] private Text startText;
-    [SerializeField] private Slider startSlider;
-    [SerializeField] private Text afterText;
-    [SerializeField] private Slider afterSlider;
-    [SerializeField] private Text roundText;
-    [SerializeField] private Slider roundSlider;
-    [SerializeField] private Text burnText;
-    [SerializeField] private Slider burnSlider;
-    [SerializeField] private Text timeText;
-    [SerializeField] private Slider timeSlider;
-
-    [SerializeField] private string gameSceneName;
-    [SerializeField] private string mainMenuSceneName;
+    [SerializeField] protected Text marbleNumText;
+    [SerializeField] protected Slider marbleNumSlider;
+    [SerializeField] protected Text startText;
+    [SerializeField] protected Slider startSlider;
+    [SerializeField] protected Text afterText;
+    [SerializeField] protected Slider afterSlider;
+    [SerializeField] protected Text roundText;
+    [SerializeField] protected Slider roundSlider;
+    [SerializeField] protected Text burnText;
+    [SerializeField] protected Slider burnSlider;
+    [SerializeField] protected Text timeText;
+    [SerializeField] protected Slider timeSlider;
     
     // Use this for initialization
-    void Start () {
-        ChangeMarbleNumber(false);
-        ChangeStartStyle(false);
-        ChangeAfterStyle(false);
-        ChangeRoundToWin(false);
-        ChangeBurningRule(false);
-        ChangeTimePerTurn(false);
+    protected void Start () {
+        //Lee
+        if (SaveData.currentSave.defeated[1])
+        {
+            timeSlider.interactable = true;
+            ChangeTimePerTurn(false);
+        }
+        //Murugam
+        if (SaveData.currentSave.defeated[2])
+        {
+            roundSlider.interactable = true;
+            ChangeRoundToWin(false);
+        }
+        //Kamal
+        if (SaveData.currentSave.defeated[3])
+        {
+            burnSlider.interactable = true;
+            ChangeBurningRule(false);
+        }
+        //Eric
+        if (SaveData.currentSave.defeated[4])
+        {
+            afterSlider.interactable = true;
+            startSlider.interactable = true;
+
+            ChangeStartStyle(false);
+            ChangeAfterStyle(false);
+        }
+        //Esther
+        if (SaveData.currentSave.defeated[5])
+        {
+            marbleNumSlider.interactable = true;
+            ChangeMarbleNumber(false);
+
+        }
 	}
 
     public void ChangeMarbleNumber(bool sound = true)
@@ -153,15 +178,9 @@ public class ModeSelect : MonoBehaviour {
         }
     }
 
-    public void Startgame()
+    public void RoomGoTo(string room)
     {
         AudioController.instance.PlaySoundEffect(Context.ButtonPress);
-        SceneManager.LoadScene(gameSceneName);
-    }
-
-    public void ReturnToMainMenu()
-    {
-        AudioController.instance.PlaySoundEffect(Context.ButtonPress);
-        SceneManager.LoadScene(mainMenuSceneName);
+        SceneManager.LoadScene(room);
     }
 }

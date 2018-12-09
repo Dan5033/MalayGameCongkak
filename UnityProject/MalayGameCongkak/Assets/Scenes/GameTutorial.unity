@@ -1133,11 +1133,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   endGameCanvas: {fileID: 570976939}
-  title: {fileID: 1429059645}
   winnerText: {fileID: 1429059648}
-  rematchButton: {fileID: 995700376}
-  homeButton: {fileID: 289411125}
-  mainMenuName: MainMenu
+  potrait: {fileID: 0}
+  box: {fileID: 0}
+  text: {fileID: 0}
 --- !u!223 &570976939
 Canvas:
   m_ObjectHideFlags: 0
@@ -2820,6 +2819,11 @@ MonoBehaviour:
   fireAnimation: {fileID: 1757851395530720, guid: ece842d2775c3224aa41c88640356d5d,
     type: 2}
   endGameScreen: {fileID: 570976938}
+  masterPix: []
+  box: {fileID: 0}
+  quotes: {fileID: 0}
+  potrait: {fileID: 0}
+  mask: {fileID: 0}
   ffButton: {fileID: 1700608132}
   textBox: {fileID: 2055016613}
   textPotrait: {fileID: 1586271621}
@@ -2874,7 +2878,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00045776367, y: 0}
+  m_AnchoredPosition: {x: -0.00048828125, y: 0}
   m_SizeDelta: {x: -0.10998535, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1326353014
@@ -3678,8 +3682,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 270}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 259, y: -91}
-  m_SizeDelta: {x: 626.6, y: 626.6}
+  m_AnchoredPosition: {x: 187, y: -100}
+  m_SizeDelta: {x: 513, y: 513}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1586271622
 MonoBehaviour:
@@ -3700,7 +3704,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: f6953d84df952844c9c6e5a524872ff2, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 85658173b70c7f340bae2e3d48c2d71f, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -4580,8 +4584,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 249, y: -376}
-  m_SizeDelta: {x: 70.1, y: 415.3}
+  m_AnchoredPosition: {x: 249.17, y: -376}
+  m_SizeDelta: {x: 69.759995, y: 415.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2055016614
 MonoBehaviour:

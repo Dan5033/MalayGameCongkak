@@ -166,7 +166,7 @@ public class TutorialGame : AIGame {
                     //Wrong slot
                     display = new string[]
                     {
-                        "Wrong one!",
+                        "Nope! Not that one.",
                         "Pick this one."
                     };
                     StartCoroutine(TextBoxEnter(display, 0.01f));
@@ -285,7 +285,7 @@ public class TutorialGame : AIGame {
                     //Wrong slot
                     display = new string[]
                     {
-                        "Wrong one!",
+                        "Not the right one.",
                         "Pick this one."
                     };
                     StartCoroutine(TextBoxEnter(display, 0.01f));

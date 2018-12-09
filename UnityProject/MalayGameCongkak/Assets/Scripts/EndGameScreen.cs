@@ -8,26 +8,14 @@ public class EndGameScreen : MonoBehaviour {
 
     [Header("UI Objects")]
     [SerializeField] Canvas endGameCanvas;
-    [SerializeField] GameObject title;
     [SerializeField] Text winnerText;
-    [SerializeField] GameObject rematchButton;
-    [SerializeField] GameObject homeButton;
-
-    [SerializeField] string mainMenuName = "MainMenu";
-
-	void Start ()
-    {
-		
-	}
-	
-	void Update ()
-    {
-
-	}
+    [SerializeField] Image potrait;
+    [SerializeField] Image box;
+    [SerializeField] Text text;
 
     public void ReturnToMainMenu()
     {
-        SceneManager.LoadScene(mainMenuName);
+        SceneManager.LoadScene("MainMenu");
         AdManager.DestroyInsterstitial();
     }
 
@@ -37,11 +25,11 @@ public class EndGameScreen : MonoBehaviour {
         AdManager.DestroyInsterstitial();
     }
 
-    public void EnableCanvas(bool ai)
+    public void EnableCanvas(bool ai, string text, Sprite master)
     {
         endGameCanvas.enabled = true;
-        StartCoroutine(MoveTitle());
-
+        potrait.sprite = master;
+        StartCoroutine(TextDisplay(text, 0.01f));
         if (ai)
         {
             if (Game.instance.winner == 0)
@@ -65,17 +53,16 @@ public class EndGameScreen : MonoBehaviour {
         }
     }
 
-    IEnumerator MoveTitle()
+    IEnumerator TextDisplay(string text, float delay)
     {
-        Vector3 destination = new Vector3(Screen.width / 2, Screen.height * 3 / 4, 0);
-        Vector3 rematchDest = new Vector3(Screen.width / 2, Screen.height * 2 / 4, 0);
-        Vector3 homeDest = new Vector3(Screen.width / 2, Screen.height * 1 / 4, 0);
-        while (Vector3.Distance(title.transform.position,destination) > Mathf.Epsilon)
+        int pointer = 0;
+
+        while (pointer < text.Length)
         {
-            title.transform.position = Vector3.Lerp(title.transform.position, destination, 0.1f);
-            rematchButton.transform.position = Vector3.Lerp(rematchButton.transform.position, rematchDest, 0.1f);
-            homeButton.transform.position = Vector3.Lerp(homeButton.transform.position, homeDest, 0.1f);
-            yield return null;
+            pointer++;
+
+            this.text.text = text.Substring(0, pointer);
+            yield return new WaitForSeconds(delay);
         }
     }
 }

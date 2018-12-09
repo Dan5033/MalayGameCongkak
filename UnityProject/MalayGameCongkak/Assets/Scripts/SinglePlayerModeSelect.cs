@@ -9,6 +9,7 @@ public class SinglePlayerModeSelect : MonoBehaviour {
     [SerializeField] Button btVersus;
     [SerializeField] Text textVersus;
     [SerializeField] Button btFreePlay;
+    [SerializeField] Text textFree;
 
     [SerializeField] GameObject tutorialBadge;
     private Vector3 tutorialBadgeDest;
@@ -29,6 +30,12 @@ public class SinglePlayerModeSelect : MonoBehaviour {
             {
                 TutorialComplete();
             }
+        }
+
+        if (SaveData.currentSave.defeated[0])
+        {
+            btFreePlay.interactable = true;
+            textFree.text = "Free Play";
         }
 	}
 

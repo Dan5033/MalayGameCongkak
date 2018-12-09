@@ -78,8 +78,9 @@ public class Game : MonoBehaviour {
     [SerializeField] protected Image[] timeBar;
     [SerializeField] protected GameObject fireAnimation;
     [SerializeField] protected EndGameScreen endGameScreen;
+    [SerializeField] protected Sprite[] masterPix;
 
-	protected void Start ()
+    protected void Start ()
     {
         AdManager.RequestInterstitial();
 
@@ -130,17 +131,18 @@ public class Game : MonoBehaviour {
             InstructionDisplay();
 
             //Click Input
-            Touch[] touches;
+            Touch[] touches = new Touch[0];
+#if UNITY_EDITOR
             if (Input.GetMouseButtonDown(0))
             {
                 touches = new Touch[1];
                 touches[0] = new Touch();
                 touches[0].phase = TouchPhase.Began;
                 touches[0].position = Input.mousePosition;
-            } else
-            {
-                touches = Input.touches;
             }
+#elif UNITY_ANDROID
+                touches = Input.touches;
+#endif
 
             //Game Turn
             switch (turn)
@@ -290,7 +292,7 @@ public class Game : MonoBehaviour {
                             if (wins[0] == roundsToWin || wins[1] == roundsToWin)
                             {
                                 turn = GameState.ResultScreen;
-                                endGameScreen.EnableCanvas(false);
+                                endGameScreen.EnableCanvas(false,GenerateTips(), PickDefeatedPotraits());
                             }
                             else
                             {
@@ -858,5 +860,39 @@ public class Game : MonoBehaviour {
         }
 
         UpdateSlotSprite();
+    }
+
+    protected string GenerateTips()
+    {
+        string[] tips = new string[]
+        {
+            "Don't forget to snag easy points by picking villages witht he right amount of marbles.",
+            "When moving together, try to pace yourself so that you opponent lands in an empty village.",
+            "Make sure you consider extending your turn rather than atacking. You might get more points that way.",
+            "Make sure you consider attacking rather picking a random village for your turn.",
+            "Keep an eye on the village bursting with meeples. The enemy might try to snag them from you.",
+            "When playing against a master, don't forget you tell them to speed up so that you don;t have to wait too long.",
+            "Remember you can practice against a master with custom rules by going to Free Play",
+            "Defeat masters to unlock more options in Free Play and in Two Players Modes.",
+            "Congkak is a traditional game played since the age of the Malacca Sulatanate.",
+            "Congkak is one of the few traditional games still played my kids in South East Asian coutnries."
+        };
+
+        return tips[Mathf.RoundToInt(Random.value * (tips.Length - 1))];
+    }
+    
+    protected Sprite PickDefeatedPotraits()
+    {
+        List<Sprite> list = new List<Sprite>();
+        list.Add(masterPix[0]);
+        for (int i = 1; i < SaveData.currentSave.defeated.Length; i++)
+        {
+            if (SaveData.currentSave.defeated[i])
+            {
+                list.Add(masterPix[i]);
+            }
+        }
+
+        return list[Random.Range(0, list.Count - 1)];
     }
 }
