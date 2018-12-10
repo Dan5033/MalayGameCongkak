@@ -44,6 +44,8 @@ public class TutorialGame : AIGame {
 
     private new void Start ()
     {
+        master = Masters.Free;
+
         base.Start();
 
         //Make Fast Forward Unusable
@@ -446,6 +448,7 @@ public class TutorialGame : AIGame {
 
                                     if (nextSlot[0] == -2)
                                     {
+                                        SetupTurn(1);
                                         sequence++;
                                     }
                                 }
@@ -457,16 +460,114 @@ public class TutorialGame : AIGame {
                     display = new string[]
                     {
                         "Nice one.",
-                        "Well. I think that's all the rules.",
-                        "There are variations but that's the gist of it.",
-                        "I'll be here if you forget the rules.",
-                        "If you're ready to play against me for real...",
-                        "I'll be waiting for you in the Versus Mode"
+                        "This will go on until all of the villages are empty.",
+                        "When that happens, the one with the most meeples wins!",
+                        "My Turn."
                     };
                     StartCoroutine(TextBoxEnter(display, 0.01f));
                     sequence++;
                     break;
                 case 20:
+                    if (aiThinking <= 0)
+                    {
+                        if (nextSlot[1] == -1)
+                        {
+                            int selected = 8;
+                            while (slots[selected].MarbleAmount() == 0)
+                            {
+                                selected++;
+                                if (selected == 15)
+                                {
+                                    selected = 8;
+                                }
+                            }
+                            PlayerTurn(1, slots[selected]);
+                        }
+                        else if (nextSlot[1] > -1)
+                        {
+                            PlayerTurn(1, slots[nextSlot[1]]);
+                        }
+
+                        if (nextSlot[1] == -2)
+                        {
+                            SetupTurn(0);
+                            sequence++;
+                        }
+
+                        aiThinking = waitTime;
+                    }
+                    else
+                    {
+                        aiThinking -= Time.deltaTime;
+                    }
+                    break;
+                case 21:
+                    display = new string[]
+                    {
+                        "Games are usually played in Best of 3 format.",
+                        "And the board is reset in between each games.",
+                        "Except...",
+                        "If you play with Burn Rules.",
+                        "That means the meeple in your storehouse will only fill your own village",
+                        "Any empty village after that will be Burned.",
+                        "That means both sides won't be able to place any meeple in it."
+                    };
+                    StartCoroutine(TextBoxEnter(display, 0.01f));
+                    sequence++;
+                    break;
+                case 22:
+                    //Do every step
+                    UpdateSlotSprite();
+
+                    //Text Display
+                    InstructionDisplay();
+
+                    //Click Input
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        touches = new Touch[1];
+                        touches[0] = new Touch();
+                        touches[0].phase = TouchPhase.Began;
+                        touches[0].position = Input.mousePosition;
+                    }
+                    else
+                    {
+                        touches = Input.touches;
+                    }
+
+                    switch (turn)
+                    {
+                        case GameState.P1Turn:
+                            foreach (Touch i in touches)
+                            {
+                                Slot slot = FindSlotOnTouch(i);
+                                if (slot != null)
+                                {
+                                    //P1 Turn
+                                    PlayerTurn(0, slot);
+
+                                    if (nextSlot[0] == -2)
+                                    {
+                                        SetupTurn(1);
+                                        sequence++;
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                    break;
+                case 23:
+                    display = new string[]
+                    {
+                        "And I think that's all the rules.",
+                        "I'll be here if you need a revision.",
+                        "But if you want to play against me for real...",
+                        "I'll be waiting for you in Versus Mode."
+                    };
+                    StartCoroutine(TextBoxEnter(display, 0.01f));
+                    sequence++;
+                    break;
+                case 24:
                     SaveData.currentSave.tutorialCompleted = true;
                     SaveData.SaveGame();
                     SceneManager.LoadScene("Mode1P");
