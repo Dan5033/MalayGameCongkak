@@ -26,37 +26,37 @@ public class ModeSelect : MonoBehaviour {
         if (SaveData.currentSave.defeated[1])
         {
             timeSlider.interactable = true;
-            ChangeTimePerTurn(false);
         }
         //Murugam
         if (SaveData.currentSave.defeated[2])
         {
             roundSlider.interactable = true;
-            ChangeRoundToWin(false);
         }
         //Kamal
         if (SaveData.currentSave.defeated[3])
         {
             burnSlider.interactable = true;
-            ChangeBurningRule(false);
         }
         //Eric
         if (SaveData.currentSave.defeated[4])
         {
             afterSlider.interactable = true;
             startSlider.interactable = true;
-
-            ChangeStartStyle(false);
-            ChangeAfterStyle(false);
         }
         //Esther
         if (SaveData.currentSave.defeated[5])
         {
             marbleNumSlider.interactable = true;
-            ChangeMarbleNumber(false);
 
         }
-	}
+
+        ChangeTimePerTurn(false);
+        ChangeRoundToWin(false);
+        ChangeBurningRule(false);
+        ChangeStartStyle(false);
+        ChangeAfterStyle(false);
+        ChangeMarbleNumber(false);
+    }
 
     public void ChangeMarbleNumber(bool sound = true)
     {

@@ -1,7 +1,5 @@
 ﻿/*
 Todo
--Custom defeat and victory screens
-- Enemy defeat animation? and art
 
   Colors
   - Cream : EEDA5B

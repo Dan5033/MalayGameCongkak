@@ -20,7 +20,8 @@ public enum GameState
     GameEnd,
     ResultScreen,
     Paused,
-    Animating
+    Animating,
+    InBetweens
 }
 
 public enum AfterStyle
@@ -67,6 +68,7 @@ public class Game : MonoBehaviour {
     public GameState turn = GameState.PickingStartSlot;
     protected List<int>[] noGoSlots = { new List<int> { 7 }, new List<int> { 15 } };
     public int winner = -1;
+    private GameState inBetweenNext;
 
     //game mode variables
     protected int[] wins = { 0, 0 };
@@ -222,7 +224,7 @@ public class Game : MonoBehaviour {
                     if (turnDone[0] && turnDone[1])
                     {
                         turn = (GameState)((int)GameState.P1Turn + 1);
-                        SetupTurn(doneFirst);
+                        StartCoroutine(TurnInBetween(doneFirst));
                     }
                     break;
                 case GameState.P1Turn:
@@ -241,11 +243,11 @@ public class Game : MonoBehaviour {
                         //Setup next turn
                         if (PlayerValidSlotsNumber(1) > 0)
                         {
-                            SetupTurn(1);
+                            StartCoroutine(TurnInBetween(1));
                         }
                         else
                         {
-                            SetupTurn(0);
+                            StartCoroutine(TurnInBetween(0));
                         }
 
                         //Surrender held marbles to the opponent
@@ -272,11 +274,11 @@ public class Game : MonoBehaviour {
                     {
                         if (PlayerValidSlotsNumber(0) > 0)
                         {
-                            SetupTurn(0);
+                            StartCoroutine(TurnInBetween(0));
                         }
                         else
                         {
-                            SetupTurn(1);
+                            StartCoroutine(TurnInBetween(1));
                         }
                         if (marblesHand[1].Count > 0)
                         {
@@ -305,6 +307,9 @@ public class Game : MonoBehaviour {
                             ResetMarbles();
                         }
                     }
+                    break;
+                case GameState.InBetweens:
+                    //Nothing
                     break;
             }
 
@@ -374,6 +379,10 @@ public class Game : MonoBehaviour {
             case GameState.Animating:
                 texts[0].GetComponent<Text>().text = "";
                 texts[1].GetComponent<Text>().text = "";
+                break;
+            case GameState.InBetweens:
+                texts[0].GetComponent<Text>().text = "Please wait...";
+                texts[1].GetComponent<Text>().text = "Please wait...";
                 break;
         }
     }
@@ -573,6 +582,15 @@ public class Game : MonoBehaviour {
                 }
                 break;
         }
+    }
+
+    IEnumerator TurnInBetween(int next)
+    {
+        turn = GameState.InBetweens;
+
+        yield return new WaitForSeconds(0.5f);
+
+        SetupTurn(next);
     }
 
     protected void SetupTurn(AfterStyle style)
@@ -881,16 +899,16 @@ public class Game : MonoBehaviour {
     {
         string[] tips = new string[]
         {
-            "Don't forget to snag easy points by picking villages witht he right amount of marbles.",
+            "Don't forget to snag easy points by picking villages witht he right amount of meeples.",
             "When moving together, try to pace yourself so that you opponent lands in an empty village.",
             "Make sure you consider extending your turn rather than atacking. You might get more points that way.",
             "Make sure you consider attacking rather picking a random village for your turn.",
             "Keep an eye on the village bursting with meeples. The enemy might try to snag them from you.",
-            "When playing against a master, don't forget you tell them to speed up so that you don;t have to wait too long.",
+            "When playing against a master, don't forget you tell them to speed up so that you don't have to wait too long.",
             "Remember you can practice against a master with custom rules by going to Free Play",
             "Defeat masters to unlock more options in Free Play and in Two Players Modes.",
             "Congkak is a traditional game played since the age of the Malacca Sulatanate.",
-            "Congkak is one of the few traditional games still played my kids in South East Asian coutnries.",
+            "Congkak is one of the few traditional games still played by kids in South East Asian coutnries.",
             "Did you know, if you launch the game on certain days, you will get a prize!"
         };
 

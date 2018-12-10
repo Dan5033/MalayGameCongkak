@@ -60,6 +60,8 @@ public class ModeSelectFreePlay : ModeSelect {
             diffSlider.interactable = true;
 
         }
+
+        ChangeAI(false);
     }
 
     public void ChangeAI(bool sound = true)
