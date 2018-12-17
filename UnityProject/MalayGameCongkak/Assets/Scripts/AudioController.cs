@@ -86,7 +86,7 @@ public class AudioController : MonoBehaviour {
 
     public void ResetVolume()
     {
-        asBGM.volume = SaveData.currentSave.BGMVol;
-        asSFX.volume = SaveData.currentSave.SFXVol;
+        asBGM.volume = JSONSaveData.currentSave.BGMVol;
+        asSFX.volume = JSONSaveData.currentSave.SFXVol;
     }
 }

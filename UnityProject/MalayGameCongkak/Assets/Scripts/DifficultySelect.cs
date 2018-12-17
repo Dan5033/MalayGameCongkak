@@ -75,81 +75,85 @@ public class DifficultySelect : MonoBehaviour {
 
     public void StartMatch(int master)
     {
-        switch ((Masters)master)
+        //Make sure doen't accidentally start level
+        if (velocity.magnitude  < 1)
         {
-            case Masters.Safiya:
-                AIGame.difficulty = Difficulty.easy;
-                AIGame.marblePerSlot = 7;
-                AIGame.startStyle = StartStyle.together;
-                AIGame.afterStyle = AfterStyle.StartTogether;
-                AIGame.roundsToWin = 2;
-                AIGame.burntVillages = false;
-                AIGame.timePerTurn = 0;
-                break;
-            case Masters.Lee:
-                //8 seconds per turn
-                AIGame.difficulty = Difficulty.medium;
-                AIGame.marblePerSlot = 7;
-                AIGame.startStyle = StartStyle.together;
-                AIGame.afterStyle = AfterStyle.StartTogether;
-                AIGame.roundsToWin = 2;
-                AIGame.burntVillages = false;
-                AIGame.timePerTurn = 8;
-                break;
-            case Masters.Murugam:
-                //Long game
-                AIGame.difficulty = Difficulty.medium;
-                AIGame.marblePerSlot = 7;
-                AIGame.startStyle = StartStyle.together;
-                AIGame.afterStyle = AfterStyle.StartTogether;
-                AIGame.roundsToWin = 3;
-                AIGame.burntVillages = false;
-                AIGame.timePerTurn = 0;
-                break;
-            case Masters.Kamal:
-                //Burn Rule Enabled
-                AIGame.difficulty = Difficulty.medium;
-                AIGame.marblePerSlot = 7;
-                AIGame.startStyle = StartStyle.together;
-                AIGame.afterStyle = AfterStyle.StartTogether;
-                AIGame.roundsToWin = 2;
-                AIGame.burntVillages = true;
-                AIGame.timePerTurn = 0;
-                break;
-            case Masters.Eric:
-                //I start first
-                AIGame.difficulty = Difficulty.medium;
-                AIGame.marblePerSlot = 7;
-                AIGame.startStyle = StartStyle.P2;
-                AIGame.afterStyle = AfterStyle.P2Start;
-                AIGame.roundsToWin = 2;
-                AIGame.burntVillages = false;
-                AIGame.timePerTurn = 0;
-                break;
-            case Masters.Esther:
-                //3 Marble
-                AIGame.difficulty = Difficulty.medium;
-                AIGame.marblePerSlot = 3;
-                AIGame.startStyle = StartStyle.together;
-                AIGame.afterStyle = AfterStyle.StartTogether;
-                AIGame.roundsToWin = 2;
-                AIGame.burntVillages = false;
-                AIGame.timePerTurn = 0;
-                break;
-            case Masters.TokSenah:
-                //Hard mode
-                AIGame.difficulty = Difficulty.hard;
-                AIGame.marblePerSlot = 7;
-                AIGame.startStyle = StartStyle.together;
-                AIGame.afterStyle = AfterStyle.RoundWinner;
-                AIGame.roundsToWin = 2;
-                AIGame.burntVillages = true;
-                AIGame.timePerTurn = 5;
-                break;
-        }
-        AIGame.master = (Masters)master;
+            switch ((Masters)master)
+            {
+                case Masters.Safiya:
+                    AIGame.difficulty = Difficulty.easy;
+                    AIGame.marblePerSlot = 1;
+                    AIGame.startStyle = StartStyle.together;
+                    AIGame.afterStyle = AfterStyle.StartTogether;
+                    AIGame.roundsToWin = 2;
+                    AIGame.burntVillages = false;
+                    AIGame.timePerTurn = 0;
+                    break;
+                case Masters.Lee:
+                    //8 seconds per turn
+                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.marblePerSlot = 7;
+                    AIGame.startStyle = StartStyle.together;
+                    AIGame.afterStyle = AfterStyle.StartTogether;
+                    AIGame.roundsToWin = 2;
+                    AIGame.burntVillages = false;
+                    AIGame.timePerTurn = 8;
+                    break;
+                case Masters.Murugam:
+                    //Long game
+                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.marblePerSlot = 7;
+                    AIGame.startStyle = StartStyle.together;
+                    AIGame.afterStyle = AfterStyle.StartTogether;
+                    AIGame.roundsToWin = 3;
+                    AIGame.burntVillages = false;
+                    AIGame.timePerTurn = 0;
+                    break;
+                case Masters.Kamal:
+                    //Burn Rule Enabled
+                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.marblePerSlot = 7;
+                    AIGame.startStyle = StartStyle.together;
+                    AIGame.afterStyle = AfterStyle.StartTogether;
+                    AIGame.roundsToWin = 2;
+                    AIGame.burntVillages = true;
+                    AIGame.timePerTurn = 0;
+                    break;
+                case Masters.Eric:
+                    //I start first
+                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.marblePerSlot = 7;
+                    AIGame.startStyle = StartStyle.P2;
+                    AIGame.afterStyle = AfterStyle.P2Start;
+                    AIGame.roundsToWin = 2;
+                    AIGame.burntVillages = false;
+                    AIGame.timePerTurn = 0;
+                    break;
+                case Masters.Esther:
+                    //3 Marble
+                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.marblePerSlot = 3;
+                    AIGame.startStyle = StartStyle.together;
+                    AIGame.afterStyle = AfterStyle.StartTogether;
+                    AIGame.roundsToWin = 2;
+                    AIGame.burntVillages = false;
+                    AIGame.timePerTurn = 0;
+                    break;
+                case Masters.TokSenah:
+                    //Hard mode
+                    AIGame.difficulty = Difficulty.hard;
+                    AIGame.marblePerSlot = 7;
+                    AIGame.startStyle = StartStyle.together;
+                    AIGame.afterStyle = AfterStyle.RoundWinner;
+                    AIGame.roundsToWin = 2;
+                    AIGame.burntVillages = true;
+                    AIGame.timePerTurn = 5;
+                    break;
+            }
+            AIGame.master = (Masters)master;
 
-        GoToScene("GameAI");
+            GoToScene("GameAI");
+        }
     }
 
     private void ResetLocks()
@@ -158,13 +162,13 @@ public class DifficultySelect : MonoBehaviour {
 
         bool granny = true;
 
-        if (SaveData.currentSave.defeated[0])
+        if (JSONSaveData.currentSave.defeated[0])
         {
             for (int i = 1; i < 6; i++)
             {
                 masterPotraits[i].SetLocked(false);
 
-                granny = granny && SaveData.currentSave.defeated[i];
+                granny = granny && JSONSaveData.currentSave.defeated[i];
             }
         } else
         {

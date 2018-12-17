@@ -568,8 +568,8 @@ public class TutorialGame : AIGame {
                     sequence++;
                     break;
                 case 24:
-                    SaveData.currentSave.tutorialCompleted = true;
-                    SaveData.SaveGame();
+                    JSONSaveData.currentSave.tutorialCompleted = true;
+                    JSONSaveData.SaveGame();
                     SceneManager.LoadScene("Mode1P");
                     break;
             }

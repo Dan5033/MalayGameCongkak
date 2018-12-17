@@ -35,12 +35,12 @@ public class PauseMenu : MonoBehaviour {
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        AdManager.DestroyBanner();
+        AdManager.instance.DestroyBanner();
     }
 
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene(mainMenuSceneName);
-        AdManager.DestroyBanner();
+        AdManager.instance.DestroyBanner();
     }
 }

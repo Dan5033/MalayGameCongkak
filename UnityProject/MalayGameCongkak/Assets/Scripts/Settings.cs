@@ -17,7 +17,6 @@ public class Settings : MonoBehaviour {
     [SerializeField] Slider designSlider;
     [SerializeField] Text designText;
     [SerializeField] Image designDisplay;
-    [SerializeField] Sprite[] designSprite;
     [SerializeField] Text warning;
 
     [SerializeField] string mainMenuName;
@@ -60,7 +59,7 @@ public class Settings : MonoBehaviour {
 
     public void ChangeBGM(bool sound = false)
     {
-        SaveData.currentSave.BGMVol = bgmSlider.value/100;
+        JSONSaveData.currentSave.BGMVol = bgmSlider.value/100;
         bgmText.text = "BGM: " + Mathf.RoundToInt(bgmSlider.value);
         if (sound)
         {
@@ -71,7 +70,7 @@ public class Settings : MonoBehaviour {
 
     public void ChangeSFX(bool sound = false)
     {
-        SaveData.currentSave.SFXVol = sfxSlider.value/100;
+        JSONSaveData.currentSave.SFXVol = sfxSlider.value/100;
         sfxText.text = "SFX: " + Mathf.RoundToInt(sfxSlider.value);
         if (sound)
         {
@@ -100,7 +99,7 @@ public class Settings : MonoBehaviour {
         }
 
         //Save
-        SaveData.currentSave.displayType = (int) dispSlider.value;
+        JSONSaveData.currentSave.displayType = (int) dispSlider.value;
     }
 
     public void ChangeMarbleDesign(bool sound = false)
@@ -114,21 +113,22 @@ public class Settings : MonoBehaviour {
                 "Calm Crescent",
                 "14 Stripes",
                 "Freedom",
+                "BT",
                 "Master of Masters"
         };
         MarbleDesign des = available[(int)designSlider.value];
         designText.text = names[(int) des];
-        designDisplay.sprite = designSprite[(int)des];
+        designDisplay.sprite = Marble.sprites[(int)des];
         if (sound)
         {
             AudioController.instance.PlaySoundEffect(Context.SliderChange);
         }
-        SaveData.currentSave.selectedDesign = available[(int) designSlider.value];
+        JSONSaveData.currentSave.selectedDesign = available[(int) designSlider.value];
     }
 
     public void ReturnToMainMenu()
     {
-        SaveData.SaveGame();
+        JSONSaveData.SaveGame();
         AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(mainMenuName);
     }
@@ -143,17 +143,17 @@ public class Settings : MonoBehaviour {
         }
         if (resetCounter == 0)
         {
-            SaveData.currentSave = new SaveData();
-            SaveData.SaveGame();
+            JSONSaveData.currentSave = new JSONSaveData();
+            JSONSaveData.SaveGame();
             LoadFromSavedata();
         }
     }
 
     private void LoadFromSavedata()
     {
-        bgmSlider.value = Mathf.RoundToInt(SaveData.currentSave.BGMVol * 100);
-        sfxSlider.value = Mathf.RoundToInt(SaveData.currentSave.SFXVol * 100);
-        dispSlider.value = SaveData.currentSave.displayType;
+        bgmSlider.value = Mathf.RoundToInt(JSONSaveData.currentSave.BGMVol * 100);
+        sfxSlider.value = Mathf.RoundToInt(JSONSaveData.currentSave.SFXVol * 100);
+        dispSlider.value = JSONSaveData.currentSave.displayType;
 
         ChangeBGM(false);
         ChangeSFX(false);
@@ -163,7 +163,7 @@ public class Settings : MonoBehaviour {
         available = new List<MarbleDesign>();
         for (int i = 0; i < (int)MarbleDesign.Golden + 1; i++)
         {
-            if (SaveData.currentSave.marbleUnlocked[i])
+            if (JSONSaveData.currentSave.marbleUnlocked[i])
             {
                 available.Add((MarbleDesign)i);
             }
@@ -178,7 +178,7 @@ public class Settings : MonoBehaviour {
             int index = 0;
             for (int i = 0; i < available.Count; i++)
             {
-                if (available[i] == SaveData.currentSave.selectedDesign)
+                if (available[i] == JSONSaveData.currentSave.selectedDesign)
                 {
                     index = i;
                     break;

@@ -295,8 +295,8 @@ public class AIGame : Game {
                                     }
                                     if (master != Masters.Free)
                                     {
-                                        SaveData.currentSave.defeated[(int)master] = true;
-                                        SaveData.SaveGame();
+                                        JSONSaveData.currentSave.defeated[(int)master] = true;
+                                        JSONSaveData.SaveGame();
                                     }
                                 } else
                                 {
@@ -340,7 +340,7 @@ public class AIGame : Game {
                     runningText = StartCoroutine(TextBoxDisplay(GenerateQuote(master, Situation.RoundLost), 0.01f));
                 }
                 winsText.text = wins[0] + "-" + wins[1];
-                AdManager.ShowInterstitial();
+                AdManager.instance.ShowInterstitial();
             }
 
             //FF Button

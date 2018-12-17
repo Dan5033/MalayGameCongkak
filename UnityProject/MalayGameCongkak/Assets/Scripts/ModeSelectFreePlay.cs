@@ -16,45 +16,45 @@ public class ModeSelectFreePlay : ModeSelect {
         AIGame.master = Masters.Free;
 
         //Safiya
-	    if (SaveData.currentSave.defeated[0])
+	    if (JSONSaveData.currentSave.defeated[0])
         {
             diffSlider.maxValue = 0;
         }
         //Lee
-        if (SaveData.currentSave.defeated[1])
+        if (JSONSaveData.currentSave.defeated[1])
         {
             diffSlider.maxValue = 1;
             diffSlider.interactable = true;
         }
         //Murugam
-        if (SaveData.currentSave.defeated[2])
+        if (JSONSaveData.currentSave.defeated[2])
         {
             diffSlider.maxValue = 1;
             diffSlider.interactable = true;
         }
         //Kamal
-        if (SaveData.currentSave.defeated[3])
+        if (JSONSaveData.currentSave.defeated[3])
         {
             diffSlider.maxValue = 1;
             diffSlider.interactable = true;
 
         }
         //Eric
-        if (SaveData.currentSave.defeated[4])
+        if (JSONSaveData.currentSave.defeated[4])
         {
             diffSlider.maxValue = 1;
             diffSlider.interactable = true;
 
         }
         //Esther
-        if (SaveData.currentSave.defeated[5])
+        if (JSONSaveData.currentSave.defeated[5])
         {
             diffSlider.maxValue = 1;
             diffSlider.interactable = true;
 
         }
         //Tok Senah
-        if (SaveData.currentSave.defeated[6])
+        if (JSONSaveData.currentSave.defeated[6])
         {
             diffSlider.maxValue = 2;
             diffSlider.interactable = true;
@@ -84,6 +84,10 @@ public class ModeSelectFreePlay : ModeSelect {
             case Difficulty.hard:
                 diffText.text += "Hard";
                 break;
+        }
+        if (!diffSlider.interactable)
+        {
+            diffText.text = lockedString;
         }
     }
 

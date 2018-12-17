@@ -85,7 +85,7 @@ public class Game : MonoBehaviour {
 
     protected void Start ()
     {
-        AdManager.RequestInterstitial();
+        AdManager.instance.RequestInterstitial();
 
         //Singleton fucntion
         if (instance == null)
@@ -310,13 +310,18 @@ public class Game : MonoBehaviour {
                     break;
                 case GameState.InBetweens:
                     //Nothing
+                    if (AdManager.instance.adClosed)
+                    {
+                        turn = GameState.GameEnd;
+                        AdManager.instance.adClosed = true;
+                    }
                     break;
             }
 
             //Game End
             if (turn != GameState.ResultScreen && turn != GameState.GameEnd && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
             {
-                turn = GameState.GameEnd;
+                turn = GameState.InBetweens;
                 if (slots[7].MarbleAmount() > slots[15].MarbleAmount())
                 {
                     wins[1]++;
@@ -328,7 +333,7 @@ public class Game : MonoBehaviour {
                     winner = 0;
                 }
                 winsText.text = wins[0] + "-" + wins[1];
-                AdManager.ShowInterstitial();
+                AdManager.instance.ShowInterstitial();
             }
         }
     }
@@ -846,7 +851,7 @@ public class Game : MonoBehaviour {
     protected void ReturnToMainMenu()
     {
         SceneManager.LoadScene("MainMenu");
-        AdManager.DestroyInsterstitial();
+        AdManager.instance.DestroyInsterstitial();
     }
 
     protected void ForfeitHand(int player)
@@ -919,9 +924,9 @@ public class Game : MonoBehaviour {
     {
         List<Sprite> list = new List<Sprite>();
         list.Add(masterPix[0]);
-        for (int i = 1; i < SaveData.currentSave.defeated.Length; i++)
+        for (int i = 1; i < JSONSaveData.currentSave.defeated.Length; i++)
         {
-            if (SaveData.currentSave.defeated[i])
+            if (JSONSaveData.currentSave.defeated[i])
             {
                 list.Add(masterPix[i]);
             }
@@ -929,4 +934,5 @@ public class Game : MonoBehaviour {
 
         return list[Random.Range(0, list.Count - 1)];
     }
+    
 }

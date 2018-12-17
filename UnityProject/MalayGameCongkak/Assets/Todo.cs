@@ -1,5 +1,6 @@
 ﻿/*
 Todo
+- Figure out a way to add new data without destroying savefiles
 
   Colors
   - Cream : EEDA5B

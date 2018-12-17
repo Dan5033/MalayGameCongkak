@@ -8,7 +8,6 @@ public class MarbleNotification : MonoBehaviour {
     [SerializeField] private RectTransform notification;
     [SerializeField] private Text noteText;
     [SerializeField] private Image notePreview;
-    [SerializeField] private Sprite[] marbleSprites;
 
     private void Start()
     {
@@ -32,7 +31,7 @@ public class MarbleNotification : MonoBehaviour {
         };
 
         noteText.text = names[(int)design];
-        notePreview.sprite = marbleSprites[(int)design];
+        notePreview.sprite = Marble.sprites[(int)design];
     }
 
     IEnumerator LifeCycle()

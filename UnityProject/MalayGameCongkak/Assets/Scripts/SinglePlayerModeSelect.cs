@@ -19,20 +19,20 @@ public class SinglePlayerModeSelect : MonoBehaviour {
 	}
 	
 	void Update () {
-        if (SaveData.currentSave.tutorialBadgeShown)
+        if (JSONSaveData.currentSave.tutorialBadgeShown)
         {
             tutorialBadge.SetActive(true);
             btVersus.interactable = true;
             textVersus.text = "Versus";
         } else
         {
-            if (SaveData.currentSave.tutorialCompleted)
+            if (JSONSaveData.currentSave.tutorialCompleted)
             {
                 TutorialComplete();
             }
         }
 
-        if (SaveData.currentSave.defeated[0])
+        if (JSONSaveData.currentSave.defeated[0])
         {
             btFreePlay.interactable = true;
             textFree.text = "Free Play";
@@ -50,8 +50,8 @@ public class SinglePlayerModeSelect : MonoBehaviour {
         tutorialBadge.SetActive(true);
         tutorialBadge.transform.position = tutorialBadgeDest + new Vector3(10000, 0, 0);
         StartCoroutine(MoveObject(tutorialBadge, tutorialBadgeDest));
-        SaveData.currentSave.tutorialBadgeShown = true;
-        SaveData.SaveGame();
+        JSONSaveData.currentSave.tutorialBadgeShown = true;
+        JSONSaveData.SaveGame();
     }
 
     IEnumerator MoveObject(GameObject gameObject, Vector3 dest)

@@ -23,7 +23,7 @@ public class SaveData {
 
     //Masters
     public bool[] defeated = new bool[7];
-    public bool[] defeatAnimation = new bool[7];
+    public bool[] defeatAnimation = new bool[7]; //unused
 
     //Unlocks
     public bool[] marbleUnlocked = new bool[(int)MarbleDesign.Golden + 1];

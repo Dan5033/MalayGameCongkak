@@ -3,12 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using GoogleMobileAds.Api;
 
-public static class AdManager {
+public class AdManager: MonoBehaviour {
 
-    public static BannerView bannerView;
-    public static InterstitialAd interstitial;
+    public static AdManager instance;
 
-	public static void InitializeAdMob ()
+    public BannerView bannerView;
+    public InterstitialAd interstitial;
+    public bool adClosed = false;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        } else if (instance != this)
+        {
+            Destroy(this);
+        }
+    }
+
+    public void InitializeAdMob ()
     {
 #if UNITY_ANDROID
         string appId = "ca-app-pub-2580657966473956~6871886768";
@@ -20,7 +35,7 @@ public static class AdManager {
         MobileAds.Initialize(appId);
     }
 
-    public static void RequestBanner()
+    public void RequestBanner()
     {
 #if UNITY_ANDROID
         string adUnitId = "ca-app-pub-2580657966473956/3602849309";
@@ -38,12 +53,12 @@ public static class AdManager {
         bannerView.LoadAd(request);
     }
 
-    public static void DestroyBanner()
+    public void DestroyBanner()
     {
         bannerView.Destroy();
     }
 
-    public static void RequestInterstitial()
+    public void RequestInterstitial()
     {
 #if UNITY_ANDROID
         string adUnitId = "ca-app-pub-2580657966473956/3702785606";
@@ -61,7 +76,7 @@ public static class AdManager {
         interstitial.LoadAd(request);
     }
 
-    public static void ShowInterstitial()
+    public void ShowInterstitial()
     {
         if (interstitial.IsLoaded())
         {
@@ -69,7 +84,7 @@ public static class AdManager {
         }
     }
 
-    public static void DestroyInsterstitial()
+    public void DestroyInsterstitial()
     {
         interstitial.Destroy();
     }

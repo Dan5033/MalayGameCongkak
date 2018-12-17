@@ -11,10 +11,23 @@ public class MainMenu : MonoBehaviour {
 
     [Header("New Marble")]
     [SerializeField] private GameObject prefab;
+    [SerializeField] private Sprite[] marbleSprite;
 
     private void Awake()
     {
-        SaveData.LoadGame();
+        JSONSaveData.StartUpSequence();
+
+        Marble.sprites = marbleSprite;
+
+        System.DateTime today = System.DateTime.Now;
+        int day = PlayerPrefs.GetInt("DateDay", today.Day);
+        int month = PlayerPrefs.GetInt("DateMonth", today.Month);
+        int year = PlayerPrefs.GetInt("DateYear", today.Year);
+        Debug.Log(day + "/" + month + "/" + year);
+        if (day <= 24 && month <= 12 && year <= 2018)
+        {
+            UnlockMarble(MarbleDesign.BT);
+        }
     }
 
     void Start ()
@@ -25,11 +38,11 @@ public class MainMenu : MonoBehaviour {
             i.angularVelocity = Random.Range(-1, 1);
         }
 
-        AdManager.InitializeAdMob();
-        AdManager.RequestBanner();
+        AdManager.instance.InitializeAdMob();
+        AdManager.instance.RequestBanner();
 
         //Unlock New Marbles
-        if (SaveData.currentSave.defeated[6])
+        if (JSONSaveData.currentSave.defeated[(int) Masters.TokSenah])
         {
             UnlockMarble(MarbleDesign.Golden);
         }
@@ -67,43 +80,43 @@ public class MainMenu : MonoBehaviour {
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.KeypadEnter))
         {
-            SaveData.currentSave.tutorialCompleted = !SaveData.currentSave.tutorialCompleted;
-            Debug.Log("Tutorial Completed: " + SaveData.currentSave.tutorialCompleted);
+            JSONSaveData.currentSave.tutorialCompleted = !JSONSaveData.currentSave.tutorialCompleted;
+            Debug.Log("Tutorial Completed: " + JSONSaveData.currentSave.tutorialCompleted);
         }
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            SaveData.currentSave.defeated[0] = !SaveData.currentSave.defeated[0];
-            Debug.Log("Master 0 defeated: " + SaveData.currentSave.defeated[0]);
+            JSONSaveData.currentSave.defeated[0] = !JSONSaveData.currentSave.defeated[0];
+            Debug.Log("Master 0 defeated: " + JSONSaveData.currentSave.defeated[0]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            SaveData.currentSave.defeated[1] = !SaveData.currentSave.defeated[1];
-            Debug.Log("Master 1 defeated: " + SaveData.currentSave.defeated[1]);
+            JSONSaveData.currentSave.defeated[1] = !JSONSaveData.currentSave.defeated[1];
+            Debug.Log("Master 1 defeated: " + JSONSaveData.currentSave.defeated[1]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            SaveData.currentSave.defeated[2] = !SaveData.currentSave.defeated[2];
-            Debug.Log("Master 2 defeated: " + SaveData.currentSave.defeated[2]);
+            JSONSaveData.currentSave.defeated[2] = !JSONSaveData.currentSave.defeated[2];
+            Debug.Log("Master 2 defeated: " + JSONSaveData.currentSave.defeated[2]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            SaveData.currentSave.defeated[3] = !SaveData.currentSave.defeated[3];
-            Debug.Log("Master 3 defeated: " + SaveData.currentSave.defeated[3]);
+            JSONSaveData.currentSave.defeated[3] = !JSONSaveData.currentSave.defeated[3];
+            Debug.Log("Master 3 defeated: " + JSONSaveData.currentSave.defeated[3]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-            SaveData.currentSave.defeated[4] = !SaveData.currentSave.defeated[4];
-            Debug.Log("Master 4 defeated: " + SaveData.currentSave.defeated[4]);
+            JSONSaveData.currentSave.defeated[4] = !JSONSaveData.currentSave.defeated[4];
+            Debug.Log("Master 4 defeated: " + JSONSaveData.currentSave.defeated[4]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-            SaveData.currentSave.defeated[5] = !SaveData.currentSave.defeated[5];
-            Debug.Log("Master 5 defeated: " + SaveData.currentSave.defeated[5]);
+            JSONSaveData.currentSave.defeated[5] = !JSONSaveData.currentSave.defeated[5];
+            Debug.Log("Master 5 defeated: " + JSONSaveData.currentSave.defeated[5]);
         }
         if (Input.GetKeyDown(KeyCode.Alpha7))
         {
-            SaveData.currentSave.defeated[6] = !SaveData.currentSave.defeated[6];
-            Debug.Log("Master 6 defeated: " + SaveData.currentSave.defeated[6]);
+            JSONSaveData.currentSave.defeated[6] = !JSONSaveData.currentSave.defeated[6];
+            Debug.Log("Master 6 defeated: " + JSONSaveData.currentSave.defeated[6]);
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -146,7 +159,7 @@ public class MainMenu : MonoBehaviour {
     public void CloseGame()
     {
         AudioController.instance.PlaySoundEffect(Context.ButtonPress);
-        AdManager.bannerView.Destroy();
+        AdManager.instance.bannerView.Destroy();
         Application.Quit();
     }
 
@@ -154,14 +167,14 @@ public class MainMenu : MonoBehaviour {
     {
         AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(sceneName);
-        AdManager.bannerView.Destroy();
+        AdManager.instance.bannerView.Destroy();
     }
 
     private void UnlockMarble(MarbleDesign design)
     {
-        if (!SaveData.currentSave.marbleUnlocked[(int) design])
+        if (!JSONSaveData.currentSave.marbleUnlocked[(int) design])
         {
-            SaveData.currentSave.marbleUnlocked[(int)design] = true;
+            JSONSaveData.currentSave.marbleUnlocked[(int)design] = true;
 
             MarbleNotification obj = Instantiate(prefab).GetComponent<MarbleNotification>();
 

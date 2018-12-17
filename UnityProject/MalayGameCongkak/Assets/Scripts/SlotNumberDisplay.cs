@@ -11,7 +11,7 @@ public class SlotNumberDisplay : MonoBehaviour {
 
     private void Awake()
     {
-        if (SaveData.currentSave.displayType != 0)
+        if (JSONSaveData.currentSave.displayType != 0)
         {
             for (int i = 0; i < 16; i++)
             {
@@ -34,7 +34,7 @@ public class SlotNumberDisplay : MonoBehaviour {
 
     public void ResetNumbers(Slot[] slots, float rotation = 0)
     {
-        if (SaveData.currentSave.displayType != 0)
+        if (JSONSaveData.currentSave.displayType != 0)
         {
             for (int i = 0; i < slots.Length; i++)
             {

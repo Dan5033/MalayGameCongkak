@@ -19,32 +19,34 @@ public class ModeSelect : MonoBehaviour {
     [SerializeField] protected Slider burnSlider;
     [SerializeField] protected Text timeText;
     [SerializeField] protected Slider timeSlider;
-    
+
+    protected const string lockedString = "Locked";
+
     // Use this for initialization
     protected void Start () {
         //Lee
-        if (SaveData.currentSave.defeated[1])
+        if (JSONSaveData.currentSave.defeated[1])
         {
             timeSlider.interactable = true;
         }
         //Murugam
-        if (SaveData.currentSave.defeated[2])
+        if (JSONSaveData.currentSave.defeated[2])
         {
             roundSlider.interactable = true;
         }
         //Kamal
-        if (SaveData.currentSave.defeated[3])
+        if (JSONSaveData.currentSave.defeated[3])
         {
             burnSlider.interactable = true;
         }
         //Eric
-        if (SaveData.currentSave.defeated[4])
+        if (JSONSaveData.currentSave.defeated[4])
         {
             afterSlider.interactable = true;
             startSlider.interactable = true;
         }
         //Esther
-        if (SaveData.currentSave.defeated[5])
+        if (JSONSaveData.currentSave.defeated[5])
         {
             marbleNumSlider.interactable = true;
 
@@ -73,6 +75,10 @@ public class ModeSelect : MonoBehaviour {
         {
             marbleNumText.text += " villagers per village";
         }
+        if (!marbleNumSlider.interactable)
+        {
+            marbleNumText.text = lockedString;
+        }
     }
 
     public void ChangeStartStyle(bool sound = true)
@@ -93,6 +99,10 @@ public class ModeSelect : MonoBehaviour {
             case StartStyle.together:
                 startText.text = "Start together";
                 break;
+        }
+        if (!startSlider.interactable)
+        {
+            startText.text = lockedString;
         }
     }
 
@@ -121,6 +131,10 @@ public class ModeSelect : MonoBehaviour {
                 afterText.text = "Start new match together";
                 break;
         }
+        if (!afterSlider.interactable)
+        {
+            afterText.text = lockedString;
+        }
     }
 
     public void ChangeRoundToWin(bool sound = true)
@@ -140,6 +154,10 @@ public class ModeSelect : MonoBehaviour {
         {
             roundText.text = Game.roundsToWin + " rounds to win";
         }
+        if (!roundSlider.interactable)
+        {
+            roundText.text = lockedString;
+        }
     }
 
     public void ChangeBurningRule(bool sound = true)
@@ -156,6 +174,10 @@ public class ModeSelect : MonoBehaviour {
         {
             Game.burntVillages = true;
             burnText.text = "Empty villages will be burned";
+        }
+        if (!burnSlider.interactable)
+        {
+            burnText.text = lockedString;
         }
     }
 
@@ -175,6 +197,10 @@ public class ModeSelect : MonoBehaviour {
         } else
         {
             timeText.text = Game.timePerTurn + " Seconds per turn";
+        }
+        if (!timeSlider.interactable)
+        {
+            timeText.text = lockedString;
         }
     }
 

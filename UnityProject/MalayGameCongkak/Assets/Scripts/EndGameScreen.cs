@@ -16,13 +16,13 @@ public class EndGameScreen : MonoBehaviour {
     public void ReturnToMainMenu()
     {
         SceneManager.LoadScene("MainMenu");
-        AdManager.DestroyInsterstitial();
+        AdManager.instance.DestroyInsterstitial();
     }
 
     public void Rematch()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        AdManager.DestroyInsterstitial();
+        AdManager.instance.DestroyInsterstitial();
     }
 
     public void EnableCanvas(bool ai, string text, Sprite master)

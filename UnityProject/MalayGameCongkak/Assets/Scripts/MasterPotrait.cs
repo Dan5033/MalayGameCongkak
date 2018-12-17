@@ -19,7 +19,7 @@ public class MasterPotrait : MonoBehaviour {
         nameString = masterName.text;
         descString = description.text;
 
-        bool defeated = SaveData.currentSave.defeated[(int)master];
+        bool defeated = JSONSaveData.currentSave.defeated[(int)master];
         if (defeated)
         {
             defeatedBadge.enabled = true;

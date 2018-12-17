@@ -11,22 +11,24 @@ public enum MarbleDesign
     Eid,
     MalaysiaDay,
     Independence,
+    BT,
     Golden
 }
 
 public class Marble : MonoBehaviour {
 
-    [SerializeField] Sprite[] sprites;
     [SerializeField] SpriteRenderer sr;
+
+    public static Sprite[] sprites;
 
     private void Start()
     {
-        if (SaveData.currentSave.displayType == 2)
+        if (JSONSaveData.currentSave.displayType == 2)
         {
             gameObject.SetActive(false);
         }
 
-        sr.sprite = sprites[(int) SaveData.currentSave.selectedDesign];
+        sr.sprite = sprites[(int) JSONSaveData.currentSave.selectedDesign];
     }
 
 }
