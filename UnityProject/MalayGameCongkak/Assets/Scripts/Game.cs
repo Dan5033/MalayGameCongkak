@@ -21,7 +21,9 @@ public enum GameState
     ResultScreen,
     Paused,
     Animating,
-    InBetweens
+    InBetweens,
+    AdvertisingWait,
+    Advertising
 }
 
 public enum AfterStyle
@@ -115,6 +117,8 @@ public class Game : MonoBehaviour {
 
         //Game Mode UI
         UISetup();
+
+        GPGSHandler.instance.IncrementEvent(GPGSIds.event_2p_match_started);
     }
 	
 	void Update ()
@@ -296,6 +300,8 @@ public class Game : MonoBehaviour {
                             {
                                 turn = GameState.ResultScreen;
                                 endGameScreen.EnableCanvas(false,GenerateTips(), PickDefeatedPotraits());
+                                GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_wingman);
+                                GPGSHandler.instance.IncrementEvent(GPGSIds.event_2p_match_ended);
                             }
                             else
                             {
@@ -310,18 +316,28 @@ public class Game : MonoBehaviour {
                     break;
                 case GameState.InBetweens:
                     //Nothing
-                    if (AdManager.instance.adClosed)
+                    break;
+                case GameState.AdvertisingWait:
+                    StartCoroutine(WaitForAd());
+                    break;
+                case GameState.Advertising:
+                    if (!AdManager.instance.interstitialUp)
                     {
                         turn = GameState.GameEnd;
-                        AdManager.instance.adClosed = true;
                     }
                     break;
             }
 
             //Game End
-            if (turn != GameState.ResultScreen && turn != GameState.GameEnd && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
+            List<GameState> endStates = new List<GameState>();
+            endStates.Add(GameState.ResultScreen);
+            endStates.Add(GameState.GameEnd);
+            endStates.Add(GameState.Advertising);
+            endStates.Add(GameState.AdvertisingWait);
+            endStates.Add(GameState.InBetweens);
+            if (!endStates.Contains(turn) && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
             {
-                turn = GameState.InBetweens;
+                turn = GameState.AdvertisingWait;
                 if (slots[7].MarbleAmount() > slots[15].MarbleAmount())
                 {
                     wins[1]++;
@@ -336,6 +352,23 @@ public class Game : MonoBehaviour {
                 AdManager.instance.ShowInterstitial();
             }
         }
+    }
+
+    protected IEnumerator WaitForAd()
+    {
+        turn = GameState.InBetweens;
+
+        float wait = 1;
+        while (wait > 0)
+        {
+            if (AdManager.instance.interstitialUp)
+            {
+                turn = GameState.Advertising;
+            }
+            wait -= Time.deltaTime;
+            yield return null;
+        }
+        turn = GameState.GameEnd;
     }
 
     protected virtual void InstructionDisplay()
@@ -512,11 +545,6 @@ public class Game : MonoBehaviour {
         if (burntVillages)
         {
             CheckForBurned();
-            
-            if (noGoSlots[0].Count - 1 >= 7 || noGoSlots[1].Count - 1 >= 7)
-            {
-                ReturnToMainMenu();
-            }
         } else
         {
             //Move all marbles to one list
@@ -544,7 +572,7 @@ public class Game : MonoBehaviour {
             marblesHand[0] = new List<GameObject>();
         }
 
-        SetupTurn(afterStyle);
+        StartCoroutine(TurnInBetween(afterStyle));
     }
 
     protected void SetupTurn(int player)
@@ -590,6 +618,15 @@ public class Game : MonoBehaviour {
     }
 
     IEnumerator TurnInBetween(int next)
+    {
+        turn = GameState.InBetweens;
+
+        yield return new WaitForSeconds(0.5f);
+
+        SetupTurn(next);
+    }
+
+    IEnumerator TurnInBetween(AfterStyle next)
     {
         turn = GameState.InBetweens;
 

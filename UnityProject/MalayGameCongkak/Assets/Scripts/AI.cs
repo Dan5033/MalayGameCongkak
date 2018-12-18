@@ -2,18 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Style
+{
+    Simple,
+    Speed,
+    Defense,
+    Predictive,
+    Balanced,
+    Offensive,
+    Complex,
+}
+
 public class AI {
-    private Difficulty diff;
+    private Style style;
     int[] marbleArray = new int[16];
     List<int> noGoList = new List<int>();
 
-    static float[] resetTime = { 1, 0.5f, 0.25f };
-
     private static int safety = 10;
     
-    public AI(Difficulty diff, List<int> nogo)
+    public AI(Style style, List<int> nogo)
     {
-        this.diff = diff;
+        this.style = style;
         noGoList = nogo;
     }
 
@@ -27,7 +36,18 @@ public class AI {
 
     public float WaitTime()
     {
-        return resetTime[(int)diff];
+        switch (style)
+        {
+            case Style.Simple:
+                return 1;
+            case Style.Predictive:
+                return 0.8f;
+            case Style.Speed:
+            case Style.Complex:
+                return 0.25f;
+            default:
+                return 0.5f;
+        }
     }
 
     public int NextMove()
@@ -40,11 +60,122 @@ public class AI {
                 possible.Add(i);
             }
         }
-        switch (diff)
+        int bestMove = -1;
+        switch (style)
         {
-            case Difficulty.easy:
+            case Style.Simple:
+                //Pure Random
                 return possible[Mathf.RoundToInt(Random.Range(0, possible.Count - 1))];
-            case Difficulty.medium:
+            case Style.Complex:
+                //5 Steps in the future AI
+                bestMove = possible[Mathf.RoundToInt(Random.Range(0, possible.Count - 1))];
+                safety = 5;
+                SimulateRound(marbleArray,noGoList,out bestMove);
+                return bestMove;
+            case Style.Speed:
+                //Free Points
+                for (int i = 8; i < 15; i++)
+                {
+                    if (marbleArray[i] == i - 7)
+                    {
+                        return i;
+                    }
+                }
+
+                bestMove = possible[Mathf.RoundToInt(Random.Range(0, possible.Count - 1))];
+                return bestMove;
+            case Style.Defense:
+                //Free Points
+                for (int i = 8; i < 15; i++)
+                {
+                    if (marbleArray[i] == i - 7)
+                    {
+                        return i;
+                    }
+                }
+
+                //Defending Attacks
+                for (int i = 8; i < 15; i++)
+                {
+                    if (marbleArray[i] > 0 && marbleArray[14 - i] == 0)
+                    {
+                        return i;
+                    }
+                }
+
+                //defending large pool
+                bestMove = 8;
+                for (int i = 8; i < 15; i++)
+                {
+                    if (marbleArray[bestMove] < marbleArray[i])
+                    {
+                        bestMove = i;
+                    }
+                }
+                return bestMove;
+            case Style.Offensive:
+                //Free Points
+                for (int i = 8; i < 15; i++)
+                {
+                    if (marbleArray[i] == i - 7)
+                    {
+                        return i;
+                    }
+                }
+
+                //Attacking
+                for (int i = 8; i < 15; i++)
+                {
+                    if (marbleArray[i] == 0 && marbleArray[14 - i] > 0)
+                    {
+                        for (int j = 1; j + i < 15; j++)
+                        {
+                            if (marbleArray[j + i] == j)
+                            {
+                                return j + i;
+                            }
+                        }
+                    }
+                }
+
+                 return possible[Mathf.RoundToInt(Random.Range(0, possible.Count - 1))];
+            case Style.Predictive:
+                //Free Points
+                for (int i = 8; i < 15; i++)
+                {
+                    if (marbleArray[i] == i - 7)
+                    {
+                        return i;
+                    }
+                }
+
+                //Defending Easy points
+                for (int i = 6; i >= 0; i--)
+                {
+                    if (marbleArray[i] == i + 1)
+                    {
+                        int tgt = 14 - i;
+                        for (int j = 1; j + tgt < 15; j++)
+                        {
+                            if (marbleArray[j + tgt] == j)
+                            {
+                                return j + tgt;
+                            }
+                        }
+                    }
+                }
+
+                //Defending Attacks
+                for (int i = 8; i < 15; i++)
+                {
+                    if (marbleArray[i] > 0 && marbleArray[14-i] == 0)
+                    {
+                        return i;
+                    }
+                }
+
+                return possible[Mathf.RoundToInt(Random.Range(0, possible.Count - 1))];
+            default:
                 //Free Points
                 for (int i = 8; i < 15; i++)
                 {
@@ -61,9 +192,9 @@ public class AI {
                     {
                         for (int j = 1; j + i < 15; j++)
                         {
-                            if (marbleArray[j+i] == j)
+                            if (marbleArray[j + i] == j)
                             {
-                                return j+i;
+                                return j + i;
                             }
                         }
                     }
@@ -79,13 +210,6 @@ public class AI {
                     }
                 }
                 return most;
-            case Difficulty.hard:
-                int bestMove = -1;
-                SimulateRound(marbleArray,noGoList,out bestMove);
-                safety = 10;
-                return bestMove;
-            default:
-                return -1;
         }
     }
 

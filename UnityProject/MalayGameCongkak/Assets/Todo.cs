@@ -1,6 +1,6 @@
 ﻿/*
 Todo
-- Figure out a way to add new data without destroying savefiles
+- Save Game Online
 
   Colors
   - Cream : EEDA5B

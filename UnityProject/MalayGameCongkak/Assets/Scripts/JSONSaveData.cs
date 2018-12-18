@@ -54,6 +54,31 @@ public class JSONSaveData
         }
     }
 
+    public void UpdateAchievements()
+    {
+        if (tutorialCompleted)
+        {
+            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_congkak_student);
+        }
+        if (defeated[0])
+        {
+            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_the_journey_begins);
+        }
+        if (defeated[6])
+        {
+            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_the_journey_ends);
+        }
+        bool unlocked = true;
+        for (int i = 0; i < (int) MarbleDesign.Independence + 1;i++)
+        {
+            unlocked = unlocked && marbleUnlocked[i];
+        }
+        if (unlocked)
+        {
+            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_seasonal_collector);
+        }
+    }
+
     public static void StartUpSequence()
     {
         string oldPath = Path.Combine(Application.persistentDataPath, "SaveFiles");

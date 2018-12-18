@@ -248,9 +248,7 @@ Prefab:
     - target: {fileID: 114470146793766360, guid: 5d82bbac7faeb23458cb29d6201461c7,
         type: 2}
       propertyPath: m_Text
-      value: 'Difficulty: Medium
-
-        Special Rules:
+      value: 'Special Rules:
 
         Burn Rule Enabled'
       objectReference: {fileID: 0}
@@ -342,7 +340,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 36.1, y: -34.5}
+  m_AnchoredPosition: {x: 36.09961, y: -34.5}
   m_SizeDelta: {x: 53.68, y: 53.68}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &428797701
@@ -474,9 +472,7 @@ Prefab:
     - target: {fileID: 114470146793766360, guid: 5d82bbac7faeb23458cb29d6201461c7,
         type: 2}
       propertyPath: m_Text
-      value: 'Difficulty: Medium
-
-        Special Rules:
+      value: 'Special Rules:
 
         3 Marbles per
 
@@ -924,9 +920,7 @@ Prefab:
     - target: {fileID: 114470146793766360, guid: 5d82bbac7faeb23458cb29d6201461c7,
         type: 2}
       propertyPath: m_Text
-      value: 'Difficulty: Medium
-
-        Special Rules:
+      value: 'Special Rules:
 
         8 Second Turns'
       objectReference: {fileID: 0}
@@ -1072,9 +1066,7 @@ Prefab:
     - target: {fileID: 114470146793766360, guid: 5d82bbac7faeb23458cb29d6201461c7,
         type: 2}
       propertyPath: m_Text
-      value: 'Difficulty: Medium
-
-        Special Rules:
+      value: 'Special Rules:
 
         Best of 5 matches'
       objectReference: {fileID: 0}
@@ -1263,6 +1255,13 @@ Prefab:
       propertyPath: m_Interactable
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114470146793766360, guid: 5d82bbac7faeb23458cb29d6201461c7,
+        type: 2}
+      propertyPath: m_Text
+      value: 'Special Rules:
+
+        None'
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d82bbac7faeb23458cb29d6201461c7, type: 2}
   m_IsPrefabAsset: 0
@@ -1400,11 +1399,9 @@ Prefab:
     - target: {fileID: 114470146793766360, guid: 5d82bbac7faeb23458cb29d6201461c7,
         type: 2}
       propertyPath: m_Text
-      value: 'Difficulty: Medium
+      value: 'Special Rules:
 
-        Special Rules:
-
-        I start first'
+        Master Starts First'
       objectReference: {fileID: 0}
     - target: {fileID: 114170111151048844, guid: 5d82bbac7faeb23458cb29d6201461c7,
         type: 2}
@@ -1635,9 +1632,7 @@ Prefab:
     - target: {fileID: 114470146793766360, guid: 5d82bbac7faeb23458cb29d6201461c7,
         type: 2}
       propertyPath: m_Text
-      value: 'Difficulty: Hard
-
-        Special Rules:
+      value: 'Special Rules:
 
         5 Second Turns
 

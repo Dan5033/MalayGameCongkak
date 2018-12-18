@@ -465,6 +465,7 @@ public class TutorialGame : AIGame {
                         "My Turn."
                     };
                     StartCoroutine(TextBoxEnter(display, 0.01f));
+                    SetupTurn(1);
                     sequence++;
                     break;
                 case 20:
@@ -487,7 +488,6 @@ public class TutorialGame : AIGame {
                         {
                             PlayerTurn(1, slots[nextSlot[1]]);
                         }
-
                         if (nextSlot[1] == -2)
                         {
                             SetupTurn(0);
@@ -513,6 +513,7 @@ public class TutorialGame : AIGame {
                         "That means both sides won't be able to place any meeple in it."
                     };
                     StartCoroutine(TextBoxEnter(display, 0.01f));
+                    SetupTurn(0);
                     sequence++;
                     break;
                 case 22:
@@ -568,6 +569,7 @@ public class TutorialGame : AIGame {
                     sequence++;
                     break;
                 case 24:
+                    GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_congkak_student);
                     JSONSaveData.currentSave.tutorialCompleted = true;
                     JSONSaveData.SaveGame();
                     SceneManager.LoadScene("Mode1P");

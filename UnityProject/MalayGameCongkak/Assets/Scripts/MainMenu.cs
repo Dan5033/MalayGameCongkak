@@ -15,19 +15,15 @@ public class MainMenu : MonoBehaviour {
 
     private void Awake()
     {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
         JSONSaveData.StartUpSequence();
 
         Marble.sprites = marbleSprite;
 
-        System.DateTime today = System.DateTime.Now;
-        int day = PlayerPrefs.GetInt("DateDay", today.Day);
-        int month = PlayerPrefs.GetInt("DateMonth", today.Month);
-        int year = PlayerPrefs.GetInt("DateYear", today.Year);
-        Debug.Log(day + "/" + month + "/" + year);
-        if (day <= 24 && month <= 12 && year <= 2018)
-        {
-            UnlockMarble(MarbleDesign.BT);
-        }
+        AdManager.instance.InitializeAdMob();
+        AdManager.instance.RequestBanner();
+
     }
 
     void Start ()
@@ -38,17 +34,22 @@ public class MainMenu : MonoBehaviour {
             i.angularVelocity = Random.Range(-1, 1);
         }
 
-        AdManager.instance.InitializeAdMob();
-        AdManager.instance.RequestBanner();
+        #region Marble Unlock
 
         //Unlock New Marbles
+        System.DateTime today = System.DateTime.Now;
+        int day = PlayerPrefs.GetInt("DateDay", today.Day);
+        int month = PlayerPrefs.GetInt("DateMonth", today.Month);
+        int year = PlayerPrefs.GetInt("DateYear", today.Year);
+        if (day <= 24 && month <= 12 && year <= 2018)
+        {
+            UnlockMarble(MarbleDesign.BT);
+        }
+
         if (JSONSaveData.currentSave.defeated[(int) Masters.TokSenah])
         {
             UnlockMarble(MarbleDesign.Golden);
         }
-
-        int month  = System.DateTime.Now.Month;
-        int day = System.DateTime.Now.Day;
 
         switch(day + "/" + month)
         {
@@ -71,12 +72,17 @@ public class MainMenu : MonoBehaviour {
                 UnlockMarble(MarbleDesign.Independence);
                 break;
         }
+
+        #endregion
+
+        JSONSaveData.currentSave.UpdateAchievements();
     }
 
     private void Update()
     {
         settings.transform.Rotate(new Vector3(0, 0, 1));
 
+        #region Test Functions
 #if UNITY_EDITOR
         if (Input.GetKey(KeyCode.KeypadEnter))
         {
@@ -154,12 +160,13 @@ public class MainMenu : MonoBehaviour {
             Debug.Log("ASD");
         }
 #endif
+        #endregion
     }
 
     public void CloseGame()
     {
         AudioController.instance.PlaySoundEffect(Context.ButtonPress);
-        AdManager.instance.bannerView.Destroy();
+        Screen.sleepTimeout = SleepTimeout.SystemSetting;
         Application.Quit();
     }
 
@@ -167,7 +174,6 @@ public class MainMenu : MonoBehaviour {
     {
         AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(sceneName);
-        AdManager.instance.bannerView.Destroy();
     }
 
     private void UnlockMarble(MarbleDesign design)
@@ -181,5 +187,15 @@ public class MainMenu : MonoBehaviour {
             obj.transform.SetParent(transform);
             obj.Setup(design);
         }
+    }
+
+    public void ShowAchivements()
+    {
+        GPGSHandler.instance.ShowAchievements();
+    }
+
+    public void ShowLeaderboards()
+    {
+        GPGSHandler.instance.ShowLeaderboards();
     }
 }

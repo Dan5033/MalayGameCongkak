@@ -1,7 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using GoogleMobileAds.Api;
+using System;
+
+public enum AdState
+{
+    Requested,
+    Loaded,
+    LoadFail,
+    Destroyed
+}
 
 public class AdManager: MonoBehaviour {
 
@@ -9,7 +19,9 @@ public class AdManager: MonoBehaviour {
 
     public BannerView bannerView;
     public InterstitialAd interstitial;
-    public bool adClosed = false;
+
+    public bool bannerUp = false;
+    public bool interstitialUp = false;
 
     private void Awake()
     {
@@ -20,6 +32,15 @@ public class AdManager: MonoBehaviour {
         } else if (instance != this)
         {
             Destroy(this);
+        }
+    }
+
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().name != "MainMenu" && bannerUp)
+        {
+            DestroyBanner();
+            bannerUp = false;
         }
     }
 
@@ -45,7 +66,9 @@ public class AdManager: MonoBehaviour {
 
         // Create a 320x50 banner at the top of the screen.
         bannerView = new BannerView(adUnitId, AdSize.SmartBanner, AdPosition.Bottom);
-        
+
+        bannerView.OnAdLoaded += HandleOnAdLoaded;
+
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
 
@@ -53,10 +76,17 @@ public class AdManager: MonoBehaviour {
         bannerView.LoadAd(request);
     }
 
+    public void HandleOnAdLoaded(object sender, EventArgs args)
+    {
+        bannerUp = true;
+    }
+
     public void DestroyBanner()
     {
-        bannerView.Destroy();
+         bannerView.Destroy();
     }
+
+    #region Interstitial
 
     public void RequestInterstitial()
     {
@@ -68,6 +98,10 @@ public class AdManager: MonoBehaviour {
 
         // Initialize an InterstitialAd.
         interstitial = new InterstitialAd(adUnitId);
+        // Called when an ad request failed to load.
+        this.interstitial.OnAdFailedToLoad += HandleOnAdFailedToLoad;
+        // Called when the ad is closed.
+        interstitial.OnAdClosed += HandleOnAdClosed;
 
         // Create an empty ad request.
         AdRequest request = new AdRequest.Builder().Build();
@@ -81,6 +115,7 @@ public class AdManager: MonoBehaviour {
         if (interstitial.IsLoaded())
         {
             interstitial.Show();
+            interstitialUp = true;
         }
     }
 
@@ -88,4 +123,17 @@ public class AdManager: MonoBehaviour {
     {
         interstitial.Destroy();
     }
+
+    public void HandleOnAdClosed(object sender, EventArgs args)
+    {
+        interstitialUp = false;
+        RequestInterstitial();
+    }
+
+    public void HandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
+    {
+        interstitialUp = false;
+    }
+
+    #endregion
 }

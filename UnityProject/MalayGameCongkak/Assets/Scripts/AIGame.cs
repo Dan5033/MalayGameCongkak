@@ -4,16 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public enum Difficulty
-{
-    easy,
-    medium,
-    hard
-}
-
 public class AIGame : Game {
 
-    public static Difficulty difficulty = Difficulty.medium;
+    public static Style style;
     public static Masters master = Masters.Free;
     protected AI ai;
     protected float aiThinking = 1;
@@ -32,7 +25,7 @@ public class AIGame : Game {
     new protected void Start ()
     {
         //Create AISystem
-        ai = new AI(difficulty,noGoSlots[1]);
+        ai = new AI(style,noGoSlots[1]);
         aiThinking = ai.WaitTime();
         waitTime = ai.WaitTime();
 
@@ -54,6 +47,8 @@ public class AIGame : Game {
         }
 
         runningText = StartCoroutine(TextBoxDisplay(GenerateQuote(master,Situation.GameStart), 0.01f));
+
+        GPGSHandler.instance.IncrementEvent(GPGSIds.event_1p_match_started);
     }
 	
 	void Update ()
@@ -293,6 +288,37 @@ public class AIGame : Game {
                                     {
                                         endGameScreen.EnableCanvas(true, GenerateQuote(master, Situation.GameLost), masterPix[(int)master]);
                                     }
+                                    //If fighting a master, Update save data
+                                    switch (master)
+                                    {
+                                        case Masters.Safiya:
+                                            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_the_journey_begins);
+                                            GPGSHandler.instance.IncrementEvent(GPGSIds.event_safiya_defeated);
+                                            break;
+                                        case Masters.Murugam:
+                                            GPGSHandler.instance.IncrementEvent(GPGSIds.event_murugam_defeated);
+                                            break;
+                                        case Masters.Kamal:
+                                            GPGSHandler.instance.IncrementEvent(GPGSIds.event_kamal_defeated);
+                                            break;
+                                        case Masters.Lee:
+                                            GPGSHandler.instance.IncrementEvent(GPGSIds.event_lee_defeated);
+                                            break;
+                                        case Masters.Esther:
+                                            GPGSHandler.instance.IncrementEvent(GPGSIds.event_esther_defeated);
+                                            break;
+                                        case Masters.Eric:
+                                            GPGSHandler.instance.IncrementEvent(GPGSIds.event_eric_defeated);
+                                            break;
+                                        case Masters.TokSenah:
+                                            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_the_journey_ends);
+                                            GPGSHandler.instance.IncrementEvent(GPGSIds.event_tok_senah_defeated);
+                                            break;
+                                        case Masters.Free:
+                                            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_flying_solo);
+                                            break;
+                                    }
+                                    GPGSHandler.instance.IncrementEvent(GPGSIds.event_1p_match_ended);
                                     if (master != Masters.Free)
                                     {
                                         JSONSaveData.currentSave.defeated[(int)master] = true;
@@ -303,6 +329,7 @@ public class AIGame : Game {
                                     if (master == Masters.Free)
                                     {
                                         endGameScreen.EnableCanvas(true, GenerateTips(), PickDefeatedPotraits());
+                                        GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_flying_solo);
                                     }
                                     else
                                     {
@@ -321,12 +348,27 @@ public class AIGame : Game {
                         }
                     }
                     break;
+                case GameState.AdvertisingWait:
+                    StartCoroutine(WaitForAd());
+                    break;
+                case GameState.Advertising:
+                    if (!AdManager.instance.interstitialUp)
+                    {
+                        turn = GameState.GameEnd;
+                    }
+                    break;
             }
-
+            
             //Game End
-            if (turn != GameState.ResultScreen && turn != GameState.GameEnd && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
+            List<GameState> endStates = new List<GameState>();
+            endStates.Add(GameState.ResultScreen);
+            endStates.Add(GameState.GameEnd);
+            endStates.Add(GameState.Advertising);
+            endStates.Add(GameState.AdvertisingWait);
+            endStates.Add(GameState.InBetweens);
+            if (!endStates.Contains(turn) && PlayerValidSlotsNumber(0) == 0 && PlayerValidSlotsNumber(1) == 0 && marblesHand[0].Count == 0 && marblesHand[1].Count == 0)
             {
-                turn = GameState.GameEnd;
+                turn = GameState.AdvertisingWait;
                 if (slots[7].MarbleAmount() > slots[15].MarbleAmount())
                 {
                     wins[1]++;
@@ -388,15 +430,15 @@ public class AIGame : Game {
                 int am2 = slots[7].GetComponent<Slot>().MarbleAmount();
                 if (am1 > am2)
                 {
-                    texts[0].GetComponent<Text>().text = "You Win";
+                    texts[0].GetComponent<Text>().text = "You Win. Tap to continue.";
                 }
                 else if (am2 > am1)
                 {
-                    texts[0].GetComponent<Text>().text = "You Lose";
+                    texts[0].GetComponent<Text>().text = "You Lose. Tap to continue.";
                 }
                 else
                 {
-                    texts[0].GetComponent<Text>().text = "Draw";
+                    texts[0].GetComponent<Text>().text = "Draw. Tap to continue.";
                 }
                 break;
             case GameState.Paused:

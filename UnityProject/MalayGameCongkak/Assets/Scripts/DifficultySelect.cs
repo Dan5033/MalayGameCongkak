@@ -81,8 +81,8 @@ public class DifficultySelect : MonoBehaviour {
             switch ((Masters)master)
             {
                 case Masters.Safiya:
-                    AIGame.difficulty = Difficulty.easy;
-                    AIGame.marblePerSlot = 1;
+                    AIGame.style = Style.Simple;
+                    AIGame.marblePerSlot = 7;
                     AIGame.startStyle = StartStyle.together;
                     AIGame.afterStyle = AfterStyle.StartTogether;
                     AIGame.roundsToWin = 2;
@@ -90,18 +90,18 @@ public class DifficultySelect : MonoBehaviour {
                     AIGame.timePerTurn = 0;
                     break;
                 case Masters.Lee:
-                    //8 seconds per turn
-                    AIGame.difficulty = Difficulty.medium;
+                    //5 seconds per turn
+                    AIGame.style = Style.Speed;
                     AIGame.marblePerSlot = 7;
                     AIGame.startStyle = StartStyle.together;
                     AIGame.afterStyle = AfterStyle.StartTogether;
                     AIGame.roundsToWin = 2;
                     AIGame.burntVillages = false;
-                    AIGame.timePerTurn = 8;
+                    AIGame.timePerTurn = 5;
                     break;
                 case Masters.Murugam:
                     //Long game
-                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.style = Style.Defense;
                     AIGame.marblePerSlot = 7;
                     AIGame.startStyle = StartStyle.together;
                     AIGame.afterStyle = AfterStyle.StartTogether;
@@ -111,7 +111,7 @@ public class DifficultySelect : MonoBehaviour {
                     break;
                 case Masters.Kamal:
                     //Burn Rule Enabled
-                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.style = Style.Predictive;
                     AIGame.marblePerSlot = 7;
                     AIGame.startStyle = StartStyle.together;
                     AIGame.afterStyle = AfterStyle.StartTogether;
@@ -121,7 +121,7 @@ public class DifficultySelect : MonoBehaviour {
                     break;
                 case Masters.Eric:
                     //I start first
-                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.style = Style.Balanced;
                     AIGame.marblePerSlot = 7;
                     AIGame.startStyle = StartStyle.P2;
                     AIGame.afterStyle = AfterStyle.P2Start;
@@ -131,7 +131,7 @@ public class DifficultySelect : MonoBehaviour {
                     break;
                 case Masters.Esther:
                     //3 Marble
-                    AIGame.difficulty = Difficulty.medium;
+                    AIGame.style = Style.Offensive;
                     AIGame.marblePerSlot = 3;
                     AIGame.startStyle = StartStyle.together;
                     AIGame.afterStyle = AfterStyle.StartTogether;
@@ -141,7 +141,7 @@ public class DifficultySelect : MonoBehaviour {
                     break;
                 case Masters.TokSenah:
                     //Hard mode
-                    AIGame.difficulty = Difficulty.hard;
+                    AIGame.style = Style.Complex;
                     AIGame.marblePerSlot = 7;
                     AIGame.startStyle = StartStyle.together;
                     AIGame.afterStyle = AfterStyle.RoundWinner;
