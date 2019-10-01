@@ -18,19 +18,7 @@ public class MarbleNotification : MonoBehaviour {
 
     public void Setup(MarbleDesign design)
     {
-        string[] names = new string[]
-        {
-                "Basic Marble",
-                "Lone Snowman",
-                "Lit Darkness",
-                "Wealth",
-                "Calm Crescent",
-                "14 Stripes",
-                "Freedom",
-                "Master of Masters"
-        };
-
-        noteText.text = names[(int)design];
+        noteText.text = Marble.names[(int)design];
         notePreview.sprite = Marble.sprites[(int)design];
     }
 

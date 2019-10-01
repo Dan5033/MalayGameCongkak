@@ -971,5 +971,13 @@ public class Game : MonoBehaviour {
 
         return list[Random.Range(0, list.Count - 1)];
     }
-    
+
+    protected void OnDestroy()
+    {
+        if (Random.value > 0.5f && PlayerPrefs.GetInt("MatchNum") > -1)
+        {
+            PlayerPrefs.SetInt("MatchNum", 0);
+        }
+    }
+
 }

@@ -94,7 +94,8 @@ public class AIGame : Game {
                             ai.UpdateWorld(slots);
                             int tgt = ai.NextMove();
                             PlayerTurn(1, slots[tgt]);
-
+                            
+                            //AI Chatter
                             if (difference > 0 && slots[15].MarbleAmount() - slots[7].MarbleAmount() < 0)
                             {
                                 runningText = StartCoroutine(TextBoxDisplay(GenerateQuote(master, Situation.Turnabout), 0.01f));
@@ -322,7 +323,7 @@ public class AIGame : Game {
                                     if (master != Masters.Free)
                                     {
                                         JSONSaveData.currentSave.defeated[(int)master] = true;
-                                        JSONSaveData.SaveGame();
+                                        GPGSHandler.instance.SaveGame();
                                     }
                                 } else
                                 {

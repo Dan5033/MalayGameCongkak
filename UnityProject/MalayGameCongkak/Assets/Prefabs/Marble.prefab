@@ -89,15 +89,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dae0b55370cace4499a75a1d38c54752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprites:
-  - {fileID: 21300000, guid: fdc66e17a88df0848bd9e7eee7ce8fa1, type: 3}
-  - {fileID: 21300000, guid: 3cb0ab55b93a4fc4686b30f2b38add90, type: 3}
-  - {fileID: 21300000, guid: c13e39662337daa41be464e4df4b894b, type: 3}
-  - {fileID: 21300000, guid: 32cf28a72b2fa594f92bfcfce0172867, type: 3}
-  - {fileID: 21300000, guid: fe9604640fc8a1e4cbafac07e1478143, type: 3}
-  - {fileID: 21300000, guid: 6ed2635076e72fa4083d9e8ec423bafe, type: 3}
-  - {fileID: 21300000, guid: 86cc8405644dcc34fbbb9805dece2b46, type: 3}
-  - {fileID: 21300000, guid: 6653068a23cccb642a35ec60d1bf0a85, type: 3}
   sr: {fileID: 212977551991158700}
 --- !u!212 &212977551991158700
 SpriteRenderer:

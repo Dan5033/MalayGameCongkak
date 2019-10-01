@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class TutorialGame : AIGame {
 
-    private int sequence = 0;
+    private int sequence = -3;
     private bool textShown = false;
 
     [Header("Text System")]
@@ -14,6 +14,10 @@ public class TutorialGame : AIGame {
     [SerializeField] private RectTransform textBox;
     [SerializeField] private RectTransform textPotrait;
     [SerializeField] private Text text;
+
+    [SerializeField] private GameObject goYesNo;
+    private Vector3 destYesNo;
+    bool tutSkip = false;
 
     [SerializeField] private SpriteRenderer blackScreen;
     [SerializeField] private SpriteMask maskVillage;
@@ -62,13 +66,36 @@ public class TutorialGame : AIGame {
         nextSlot = new int[] { -2, -2 };
         UpdateSlotSprite();
 
-        string[] display =
+        string[] display = new string[]
         {
-            "So you really want to learn how to play congkak?",
-            " Very well...",
-            "These are called villages, they usually host 7 meeples"
+        "Hi! I'm Safiya!",
+        "Do you know how to play congkak?"
         };
+        if (JSONSaveData.currentSave.tutorialCompleted)
+        {
+            display = new string[]{
+                "Welcome back!",
+                "So you needed a refresher?"
+            };
+        }
         StartCoroutine(TextBoxEnter(display, 0.01f));
+
+        destYesNo = goYesNo.GetComponent<RectTransform>().anchoredPosition;
+        goYesNo.GetComponent<RectTransform>().anchoredPosition += new Vector2(0, -3000);
+
+    }
+
+    public void TutorialStart()
+    {
+        Destroy(goYesNo);
+        sequence++;
+    }
+
+    public void TutorialSkip()
+    {
+        tutSkip = true;
+        Destroy(goYesNo);
+        sequence = 23;
     }
 	
 	void Update ()
@@ -90,6 +117,22 @@ public class TutorialGame : AIGame {
             Touch[] touches;
             switch (sequence)
             {
+                case -3:
+                    StartCoroutine(ObjectEnter(goYesNo.GetComponent<RectTransform>(), destYesNo));
+                    sequence++;
+                    break;
+                case -2:
+                    //Wait for button press
+                    break;
+                case -1:
+                    display = new string[]
+                    {
+                        "Right!",
+                        "These are called villages and each village usually have 7 meeples."
+                    };
+                    StartCoroutine(TextBoxEnter(display, 0.01f));
+                    sequence++;
+                    break;
                 case 0:
                     StartCoroutine(Highlight(maskVillage, 2));
                     sequence++;
@@ -110,7 +153,7 @@ public class TutorialGame : AIGame {
                     display = new string[]
                     {
                         "At the start of the game, you pick a village you want to start at.",
-                        " Let's pick this village."
+                        "Let's pick this village."
                     };
                     StartCoroutine(TextBoxEnter(display, 0.01f));
                     sequence++;
@@ -178,7 +221,7 @@ public class TutorialGame : AIGame {
                     display = new string[]
                     {
                         "Now, place a meeple into the next villages counter clockwise.",
-                        " I'll highlight which village is next."
+                        "I'll highlight which village is next."
                     };
                     StartCoroutine(TextBoxEnter(display, 0.01f));
                     sequence++;
@@ -358,7 +401,8 @@ public class TutorialGame : AIGame {
                     {
                         "Oh no! Your last meeple landed in my empty village",
                         "This means your turn ends here.",
-                        "My turn."
+                        "My turn!",
+                        "If I'm too slow, tell me to speed up by pressing the Fast Forward button."
                     };
                     StartCoroutine(TextBoxEnter(display, 0.01f));
                     sequence++;
@@ -469,6 +513,12 @@ public class TutorialGame : AIGame {
                     sequence++;
                     break;
                 case 20:
+                    //Do every step
+                    UpdateSlotSprite();
+
+                    //Text Display
+                    InstructionDisplay();
+
                     if (aiThinking <= 0)
                     {
                         if (nextSlot[1] == -1)
@@ -565,13 +615,22 @@ public class TutorialGame : AIGame {
                         "But if you want to play against me for real...",
                         "I'll be waiting for you in Versus Mode."
                     };
+                    if (tutSkip)
+                    {
+                        display = new string[]
+                        {
+                        "Well what are you doing here then?",
+                        "If you want to play against me for real,",
+                        "I'll be waiting in Versus Mode."
+                        };
+                    }
                     StartCoroutine(TextBoxEnter(display, 0.01f));
                     sequence++;
                     break;
                 case 24:
                     GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_congkak_student);
                     JSONSaveData.currentSave.tutorialCompleted = true;
-                    JSONSaveData.SaveGame();
+                    GPGSHandler.instance.SaveGame();
                     SceneManager.LoadScene("Mode1P");
                     break;
             }
@@ -636,8 +695,8 @@ public class TutorialGame : AIGame {
         }
 
         //Hide graphics
-        potraitHide = StartCoroutine(ObjectEnter(textPotrait, potraitDest + new Vector3(0, 10000, 0)));
-        boxHide = StartCoroutine(ObjectEnter(textBox, boxDest + new Vector3(0, 10000, 0)));
+        potraitHide = StartCoroutine(ObjectEnter(textPotrait, potraitDest + new Vector3(0, 5000, 0)));
+        boxHide = StartCoroutine(ObjectEnter(textBox, boxDest + new Vector3(0, 5000, 0)));
 
         textShown = false;
     }

@@ -1,14 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 public class JSONSaveData
 {
-
     public static JSONSaveData currentSave;
-    const string fileName = "SaveDara.gr";
+    public float playTime = 0;
 
     //Settings
     public float BGMVol = 1;
@@ -26,106 +22,11 @@ public class JSONSaveData
     public bool[] marbleUnlocked = new bool[(int)MarbleDesign.Golden + 1];
     public MarbleDesign selectedDesign = MarbleDesign.Basic;
 
-    static string dataPath = Path.Combine(Application.persistentDataPath, "SaveData.gr");
-
     public JSONSaveData()
     {
         marbleUnlocked[0] = true;
     }
 
-    public static void SaveGame()
-    {
-        string dataPath = Path.Combine(Application.persistentDataPath, "SaveData.gr");
-
-        string jsonString = JsonUtility.ToJson(currentSave);
-
-        using (StreamWriter streamWriter = File.CreateText(dataPath))
-        {
-            streamWriter.Write(jsonString);
-        }
-    }
-
-    public static void LoadGame()
-    {
-        using (StreamReader streamReader = File.OpenText(dataPath))
-        {
-            string jsonString = streamReader.ReadToEnd();
-            currentSave = JsonUtility.FromJson<JSONSaveData>(jsonString);
-        }
-    }
-
-    public void UpdateAchievements()
-    {
-        if (tutorialCompleted)
-        {
-            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_congkak_student);
-        }
-        if (defeated[0])
-        {
-            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_the_journey_begins);
-        }
-        if (defeated[6])
-        {
-            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_the_journey_ends);
-        }
-        bool unlocked = true;
-        for (int i = 0; i < (int) MarbleDesign.Independence + 1;i++)
-        {
-            unlocked = unlocked && marbleUnlocked[i];
-        }
-        if (unlocked)
-        {
-            GPGSHandler.instance.UnlockAchievement(GPGSIds.achievement_seasonal_collector);
-        }
-    }
-
-    public static void StartUpSequence()
-    {
-        string oldPath = Path.Combine(Application.persistentDataPath, "SaveFiles");
-        oldPath = Path.Combine(oldPath, "SaveData.sav");
-        //Check if old format exists
-        if (File.Exists(oldPath))
-        {
-            Debug.Log("Old Save Found");
-
-            SaveData oldSave;
-
-            //Load Old format
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-
-            using (FileStream fileStream = File.Open(oldPath, FileMode.Open))
-            {
-                Debug.Log("Old Save Loaded");
-                oldSave = (SaveData)binaryFormatter.Deserialize(fileStream);
-            }
-
-            //Save into new format
-            Debug.Log("Old Save Converted");
-            currentSave = ConvertToNew(oldSave);
-            SaveGame();
-
-            //Delete Old
-            Debug.Log("Old Save Deleted");
-            File.Delete(oldPath);
-
-            //Done
-        } else if (!File.Exists(dataPath))
-        {
-            Debug.Log("No Data Found");
-            //Create New Save
-            Debug.Log("New Data Created");
-            currentSave = new JSONSaveData();
-            //Save Game
-            SaveGame();
-            //Done
-        } else
-        {
-            //Load Game
-            LoadGame();
-
-            //Done
-        }
-    }
 
     public static JSONSaveData ConvertToNew(SaveData file)
     {
@@ -153,6 +54,26 @@ public class JSONSaveData
         newSave.selectedDesign = file.selectedDesign;
 
         return newSave;
+    }
+
+    public new string ToString()
+    {
+        return JsonUtility.ToJson(this);
+    }
+
+    public void Reformat()
+    {
+        bool[] newFormat = new bool[(int)MarbleDesign.Golden + 1];
+        for (int i = 0; i < (int) MarbleDesign.Golden; i++)
+        {
+            if (marbleUnlocked.Length > i)
+            {
+                newFormat[i] = marbleUnlocked[i];
+            }
+        }
+        newFormat[(int)MarbleDesign.Golden] = marbleUnlocked[marbleUnlocked.Length - 1];
+
+        marbleUnlocked = newFormat;
     }
 
 }

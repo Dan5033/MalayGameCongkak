@@ -27,6 +27,8 @@ public class DifficultySelect : MonoBehaviour {
     private Vector3 offset;
     private Vector3 velocity;
 
+    private bool validTouch = true;
+
     void Start ()
     {
         ResetLocks();
@@ -38,6 +40,7 @@ public class DifficultySelect : MonoBehaviour {
         if (Input.GetMouseButtonDown(0))
         {
             offset = parent.transform.position - Input.mousePosition;
+            validTouch = true;
         }
 
         //Move potraits
@@ -47,6 +50,11 @@ public class DifficultySelect : MonoBehaviour {
             position.y = parent.transform.position.y;
             velocity = position - parent.transform.position;
             parent.transform.position = position;
+
+            if (velocity.magnitude > 3)
+            {
+                validTouch = false;
+            }
         } else
         {
             //velocity
@@ -76,7 +84,7 @@ public class DifficultySelect : MonoBehaviour {
     public void StartMatch(int master)
     {
         //Make sure doen't accidentally start level
-        if (velocity.magnitude  < 1)
+        if (velocity.magnitude  < 3 && validTouch)
         {
             switch ((Masters)master)
             {

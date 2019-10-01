@@ -13,17 +13,16 @@ public class MainMenu : MonoBehaviour {
     [SerializeField] private GameObject prefab;
     [SerializeField] private Sprite[] marbleSprite;
 
+    [SerializeField] CommentNotification cn;
+
     private void Awake()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-
-        JSONSaveData.StartUpSequence();
-
+        
         Marble.sprites = marbleSprite;
 
         AdManager.instance.InitializeAdMob();
         AdManager.instance.RequestBanner();
-
     }
 
     void Start ()
@@ -41,9 +40,23 @@ public class MainMenu : MonoBehaviour {
         int day = PlayerPrefs.GetInt("DateDay", today.Day);
         int month = PlayerPrefs.GetInt("DateMonth", today.Month);
         int year = PlayerPrefs.GetInt("DateYear", today.Year);
+
         if (day <= 24 && month <= 12 && year <= 2018)
         {
+            PlayerPrefs.SetInt("IsBetaTester", 1);
+        }
+        if (PlayerPrefs.HasKey("IsBetaTester") && PlayerPrefs.GetInt("IsBetaTester") == 1)
+        {
             UnlockMarble(MarbleDesign.BT);
+        }
+
+        if (day >= 25 && day <= 31 && month == 12 && year == 2018)
+        {
+            PlayerPrefs.SetInt("IsEarlyAdopter", 1);
+        }
+        if (PlayerPrefs.HasKey("IsEarlyAdopter") && PlayerPrefs.GetInt("IsEarlyAdopter") == 1)
+        {
+            UnlockMarble(MarbleDesign.MGC);
         }
 
         if (JSONSaveData.currentSave.defeated[(int) Masters.TokSenah])
@@ -75,7 +88,17 @@ public class MainMenu : MonoBehaviour {
 
         #endregion
 
-        JSONSaveData.currentSave.UpdateAchievements();
+        GPGSHandler.instance.UpdateAchievements();
+
+        int matchNum = PlayerPrefs.GetInt("MatchNum",1);
+        if (matchNum > -1)
+        {
+            if (matchNum == 0)
+            {
+                cn.ShowNotification();
+                matchNum++;
+            }
+        }
     }
 
     private void Update()
@@ -84,6 +107,12 @@ public class MainMenu : MonoBehaviour {
 
         #region Test Functions
 #if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            PlayerPrefs.SetInt("MatchNum", 0);
+            Debug.Log("Match Num: " + PlayerPrefs.GetInt("MatchNum"));
+        }
+
         if (Input.GetKey(KeyCode.KeypadEnter))
         {
             JSONSaveData.currentSave.tutorialCompleted = !JSONSaveData.currentSave.tutorialCompleted;
@@ -159,6 +188,11 @@ public class MainMenu : MonoBehaviour {
             UnlockMarble(MarbleDesign.MalaysiaDay);
             Debug.Log("ASD");
         }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            UnlockMarble(MarbleDesign.MGC);
+            Debug.Log("ASD");
+        }
 #endif
         #endregion
     }
@@ -180,22 +214,12 @@ public class MainMenu : MonoBehaviour {
     {
         if (!JSONSaveData.currentSave.marbleUnlocked[(int) design])
         {
-            JSONSaveData.currentSave.marbleUnlocked[(int)design] = true;
+            JSONSaveData.currentSave.marbleUnlocked[(int) design] = true;
 
             MarbleNotification obj = Instantiate(prefab).GetComponent<MarbleNotification>();
 
             obj.transform.SetParent(transform);
             obj.Setup(design);
         }
-    }
-
-    public void ShowAchivements()
-    {
-        GPGSHandler.instance.ShowAchievements();
-    }
-
-    public void ShowLeaderboards()
-    {
-        GPGSHandler.instance.ShowLeaderboards();
     }
 }

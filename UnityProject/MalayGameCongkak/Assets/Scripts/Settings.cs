@@ -104,20 +104,8 @@ public class Settings : MonoBehaviour {
 
     public void ChangeMarbleDesign(bool sound = false)
     {
-        string[] names = new string[]
-        {
-                "Basic Marble",
-                "Lone Snowman",
-                "Lit Darkness",
-                "Wealth",
-                "Calm Crescent",
-                "14 Stripes",
-                "Freedom",
-                "BT",
-                "Master of Masters"
-        };
         MarbleDesign des = available[(int)designSlider.value];
-        designText.text = names[(int) des];
+        designText.text = Marble.names[(int) des];
         designDisplay.sprite = Marble.sprites[(int)des];
         if (sound)
         {
@@ -128,7 +116,7 @@ public class Settings : MonoBehaviour {
 
     public void ReturnToMainMenu()
     {
-        JSONSaveData.SaveGame();
+        GPGSHandler.instance.SaveGame();
         AudioController.instance.PlaySoundEffect(Context.ButtonPress);
         SceneManager.LoadScene(mainMenuName);
     }
@@ -144,7 +132,7 @@ public class Settings : MonoBehaviour {
         if (resetCounter == 0)
         {
             JSONSaveData.currentSave = new JSONSaveData();
-            JSONSaveData.SaveGame();
+            GPGSHandler.instance.SaveGame();
             LoadFromSavedata();
         }
     }
@@ -175,6 +163,7 @@ public class Settings : MonoBehaviour {
         }
         else
         {
+            design.SetActive(true);
             int index = 0;
             for (int i = 0; i < available.Count; i++)
             {

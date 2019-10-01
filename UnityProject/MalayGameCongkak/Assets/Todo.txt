@@ -1,0 +1,13 @@
+﻿Todo
+- Save Game Online
+X Add a skip tutorial button
+X Add an initiative to rate and comment
+- Let player see the opponent's marble
+X Add FF in tutorial
+- Add midgame pause
+
+  Colors
+  - Cream : EEDA5B
+  - Orange : E5AD19
+  - Dark Brown : 3E3520
+  - Light Brown : 80664B

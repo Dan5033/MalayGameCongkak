@@ -22,6 +22,7 @@ public class AdManager: MonoBehaviour {
 
     public bool bannerUp = false;
     public bool interstitialUp = false;
+    public bool adEnabled = false;
 
     private void Awake()
     {
@@ -46,34 +47,44 @@ public class AdManager: MonoBehaviour {
 
     public void InitializeAdMob ()
     {
+        if (adEnabled)
+        {
 #if UNITY_ANDROID
-        string appId = "ca-app-pub-2580657966473956~6871886768";
+            string appId = "ca-app-pub-2580657966473956~6871886768";
 #else
             string appId = "unexpected_platform";
 #endif
 
-        // Initialize the Google Mobile Ads SDK.
-        MobileAds.Initialize(appId);
+            // Initialize the Google Mobile Ads SDK.
+            MobileAds.Initialize(appId);
+        }
     }
+
+    #region Banner
 
     public void RequestBanner()
     {
+        if (adEnabled)
+        {
 #if UNITY_ANDROID
-        string adUnitId = "ca-app-pub-2580657966473956/3602849309";
+            Debug.Log("Banner Requested");
+
+            string adUnitId = "ca-app-pub-2580657966473956/3602849309";
 #else
             string adUnitId = "unexpected_platform";
 #endif
 
-        // Create a 320x50 banner at the top of the screen.
-        bannerView = new BannerView(adUnitId, AdSize.SmartBanner, AdPosition.Bottom);
+            // Create a 320x50 banner at the top of the screen.
+            bannerView = new BannerView(adUnitId, AdSize.SmartBanner, AdPosition.Bottom);
 
-        bannerView.OnAdLoaded += HandleOnAdLoaded;
+            bannerView.OnAdLoaded += HandleOnAdLoaded;
 
-        // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().Build();
+            // Create an empty ad request.
+            AdRequest request = new AdRequest.Builder().Build();
 
-        // Load the banner with the request.
-        bannerView.LoadAd(request);
+            // Load the banner with the request.
+            bannerView.LoadAd(request);
+        }
     }
 
     public void HandleOnAdLoaded(object sender, EventArgs args)
@@ -85,37 +96,44 @@ public class AdManager: MonoBehaviour {
     {
          bannerView.Destroy();
     }
+    #endregion
 
     #region Interstitial
 
     public void RequestInterstitial()
     {
+        if (adEnabled)
+        {
 #if UNITY_ANDROID
-        string adUnitId = "ca-app-pub-2580657966473956/3702785606";
+            string adUnitId = "ca-app-pub-2580657966473956/3702785606";
 #else
         string adUnitId = "unexpected_platform";
 #endif
 
-        // Initialize an InterstitialAd.
-        interstitial = new InterstitialAd(adUnitId);
-        // Called when an ad request failed to load.
-        this.interstitial.OnAdFailedToLoad += HandleOnAdFailedToLoad;
-        // Called when the ad is closed.
-        interstitial.OnAdClosed += HandleOnAdClosed;
+            // Initialize an InterstitialAd.
+            interstitial = new InterstitialAd(adUnitId);
+            // Called when an ad request failed to load.
+            this.interstitial.OnAdFailedToLoad += HandleOnAdFailedToLoad;
+            // Called when the ad is closed.
+            interstitial.OnAdClosed += HandleOnAdClosed;
 
-        // Create an empty ad request.
-        AdRequest request = new AdRequest.Builder().Build();
+            // Create an empty ad request.
+            AdRequest request = new AdRequest.Builder().Build();
 
-        // Load the interstitial with the request.
-        interstitial.LoadAd(request);
+            // Load the interstitial with the request.
+            interstitial.LoadAd(request);
+        }
     }
 
     public void ShowInterstitial()
     {
-        if (interstitial.IsLoaded())
+        if (adEnabled)
         {
-            interstitial.Show();
-            interstitialUp = true;
+            if (interstitial.IsLoaded())
+            {
+                interstitial.Show();
+                interstitialUp = true;
+            }
         }
     }
 

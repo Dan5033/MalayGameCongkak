@@ -48,20 +48,7 @@ public class SinglePlayerModeSelect : MonoBehaviour {
     void TutorialComplete()
     {
         tutorialBadge.SetActive(true);
-        tutorialBadge.transform.position = tutorialBadgeDest + new Vector3(10000, 0, 0);
-        StartCoroutine(MoveObject(tutorialBadge, tutorialBadgeDest));
         JSONSaveData.currentSave.tutorialBadgeShown = true;
-        JSONSaveData.SaveGame();
-    }
-
-    IEnumerator MoveObject(GameObject gameObject, Vector3 dest)
-    {
-        while (Vector3.Distance(gameObject.transform.position,dest) > 10)
-        {
-            gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, dest, 0.1f);
-            yield return null;
-        }
-
-        gameObject.transform.position = dest;
+        GPGSHandler.instance.SaveGame();
     }
 }
